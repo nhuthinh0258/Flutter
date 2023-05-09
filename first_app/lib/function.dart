@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'package:first_app/gradient_container.dart';
 
+final random = Random();
+var currentDiceRoll = 2;
 
-var activiDiceImage = 'assets/images/dice-2.png';
-void rollDice(){
-  
-}

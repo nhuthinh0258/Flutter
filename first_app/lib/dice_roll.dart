@@ -15,17 +15,19 @@ class DiceRoll extends StatefulWidget {
 }
 
 class _DiceRollState extends State<DiceRoll> {
-  var currentDiceRoll = 2;
 
+  var currentDiceRoll = 2;
   void rollDice() {
     setState(() {
-        currentDiceRoll = random.nextInt(6)+1;
+      
+        currentDiceRoll = random.nextInt(6)+1; //===> 1-6
         // activiDiceImage = 'assets/images/dice-2.png';
         // activiDiceImage = 'assets/images/dice-2.png';
         // activiDiceImage = 'assets/images/dice-3.png';
         // activiDiceImage = 'assets/images/dice-4.png';
         // activiDiceImage = 'assets/images/dice-5.png';
         // activiDiceImage = 'assets/images/dice-6.png';
+        // print(currentDiceRoll);
     });
   }
 
