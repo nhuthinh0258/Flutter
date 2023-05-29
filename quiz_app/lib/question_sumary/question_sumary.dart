@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/sumary_item.dart';
+import 'package:quiz_app/question_sumary/sumary_item.dart';
 
 class QuestionSumary extends StatelessWidget {
   const QuestionSumary(this.questionsumary, {super.key});

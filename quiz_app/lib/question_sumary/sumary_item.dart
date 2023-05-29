@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app/question_identifi.dart';
+import 'package:quiz_app/question_sumary/question_identifi.dart';
 import 'package:quiz_app/styled_text.dart';
 
 class SumaryItem extends StatelessWidget {
