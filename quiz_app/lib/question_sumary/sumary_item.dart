@@ -27,11 +27,13 @@ class SumaryItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                StyledText(
+                Text(
                   item['question'] as String,
-                  Colors.white,
-                  18,
-                  FontWeight.bold,
+                  style: const TextStyle(
+                    color:Colors.white,
+                    fontSize:18,
+                    fontWeight:FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(
                   height: 5,

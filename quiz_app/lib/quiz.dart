@@ -57,7 +57,7 @@ class _Quizz extends State<Quizz> {
     // ? StartScreen(switchScreen)
     // : const QuestionScreen();
 
-    Widget screenWidget = StartScreen(switchScreen);
+    Widget screenWidget = StartScreen(switchScreen); // Nhấn nút start để bắt đầu vào màn hình câu hỏi
 
     if (activeScreen == 'question-screen') {
       screenWidget = QuestionScreen(
