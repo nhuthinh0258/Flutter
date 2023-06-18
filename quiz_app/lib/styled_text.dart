@@ -18,7 +18,6 @@ class StyledText extends StatelessWidget {
         color: colorText,
         fontWeight: fontWeight,
       ),
-      textAlign: TextAlign.center,// Problem về text 
     );
   }
 }

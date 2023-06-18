@@ -3,7 +3,8 @@ import 'package:quiz_app/data/question.dart';
 import 'package:quiz_app/question_sumary/question_sumary.dart';
 
 class ResultScreen extends StatelessWidget {
-  const ResultScreen(this.choosenAnswer, this.restart, {super.key});
+  const ResultScreen(
+      {super.key, required this.restart, required this.choosenAnswer});
 
   final void Function() restart;
   final List<String> choosenAnswer;
@@ -50,7 +51,9 @@ class ResultScreen extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            QuestionSumary(sumaryData),
+            QuestionSumary(
+              questionsumary: sumaryData,
+            ),
             const SizedBox(
               height: 30,
             ),

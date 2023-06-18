@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/question_sumary/sumary_item.dart';
 
 class QuestionSumary extends StatelessWidget {
-  const QuestionSumary(this.questionsumary, {super.key});
+  const QuestionSumary( {super.key,required this.questionsumary});
 
   final List<Map<String, Object>> questionsumary;
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/styled_text.dart';
 
 class StartScreen extends StatelessWidget {
-  const StartScreen(this.startQuiz, {super.key});
+  const StartScreen( {super.key,required this.startQuiz});
 
   final void Function() startQuiz;
 

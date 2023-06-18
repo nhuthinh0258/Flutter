@@ -57,17 +57,16 @@ class _Quizz extends State<Quizz> {
     // ? StartScreen(switchScreen)
     // : const QuestionScreen();
 
-    Widget screenWidget = StartScreen(switchScreen); // Nhấn nút start để bắt đầu vào màn hình câu hỏi
+    Widget screenWidget = StartScreen(startQuiz: switchScreen,); // Nhấn nút start để bắt đầu vào màn hình câu hỏi
 
     if (activeScreen == 'question-screen') {
-      screenWidget = QuestionScreen(
-          chooseAnswer); //Chuyển sang question_screen sau khi nhấn start
+      screenWidget = QuestionScreen(onSelectAnswer: chooseAnswer,); //Chuyển sang question_screen sau khi nhấn start
     }
 
     if (activeScreen == 'result-screen') {
       screenWidget = ResultScreen(
-        selectedAnswer,
-        restartQuiz,
+        choosenAnswer:selectedAnswer,
+        restart:restartQuiz,
       ); //Điều hướng sang result_screen
     }
 

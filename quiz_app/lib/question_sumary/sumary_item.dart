@@ -17,8 +17,8 @@ class SumaryItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           QuestionIdentifi(
-            item['question_index'] as int,
-            isCorect,
+            questionIndex: item['question_index'] as int,
+            isCorectAnswer: isCorect,
           ),
           const SizedBox(
             height: 20,

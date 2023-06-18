@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/styled_text.dart';
 
 class QuestionIdentifi extends StatelessWidget {
-  const QuestionIdentifi(this.questionIndex, this.isCorectAnswer, {super.key});
+  const QuestionIdentifi( {super.key,required this.isCorectAnswer,required this.questionIndex});
 
   final int questionIndex;
   final bool isCorectAnswer;
@@ -18,8 +18,8 @@ class QuestionIdentifi extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
             color: isCorectAnswer
-                ? const Color.fromARGB(255, 68, 87, 225)
-                : const Color.fromARGB(255, 213, 61, 203),
+                ? const Color.fromARGB(255, 104, 119, 231)
+                : const Color.fromARGB(255, 221, 120, 215),
             borderRadius: BorderRadius.circular(100),),
         child: StyledText(
           questionNumber.toString(),
