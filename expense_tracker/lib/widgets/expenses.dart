@@ -33,6 +33,7 @@ class _ExpensesState extends State<Expenses> {
   //Show lớp phủ (Overlay)
   void openAddExpenseOverlay() {
     showModalBottomSheet(
+        useSafeArea: true,    // tính toán và sử dụng không gian an toàn để đảm bảo rằng nội dung trong widget không bị che phủ bởi camera, etc ...
         isScrollControlled: true, //Làm lớp phủ(Overlay) được full màn hình
         context: context,
         builder: (ctx) {
@@ -80,6 +81,9 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+
     Widget mainContent = Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -88,15 +92,23 @@ class _ExpensesState extends State<Expenses> {
             'assets/images/cactus.png',
             width: 100,
             height: 100,
-            color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.25),
+            color: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .color!
+                .withOpacity(0.25),
           ),
           const SizedBox(
             height: 16,
           ),
           Text(
             'Hiện không có chi phí nào, hãy tạo chi phí!',
-            style:TextStyle(
-              color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.25),
+            style: TextStyle(
+              color: Theme.of(context)
+                  .textTheme
+                  .bodyMedium!
+                  .color!
+                  .withOpacity(0.25),
             ),
           )
         ],
@@ -120,14 +132,28 @@ class _ExpensesState extends State<Expenses> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Chart(expenses: registeredExpenses),
-          Expanded(
-            child: mainContent,
-          ),
-        ],
-      ),
+      body: width < 600
+          ? Column(
+              //Reponsives
+              children: [
+                Chart(
+                  expenses: registeredExpenses,
+                ),
+                Expanded(
+                  child: mainContent,
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(
+                  child: Chart(expenses: registeredExpenses),
+                ),
+                Expanded(
+                  child: mainContent,
+                ),
+              ],
+            ),
     );
   }
 }

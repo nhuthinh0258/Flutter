@@ -1,4 +1,7 @@
 import 'package:expense_tracker/model/expense.dart';
+import 'package:expense_tracker/widgets/reponsive/reponsive_add_one.dart';
+import 'package:expense_tracker/widgets/reponsive/reponsive_add_three.dart';
+import 'package:expense_tracker/widgets/reponsive/reponsive_add_two.dart';
 import 'package:flutter/material.dart';
 
 class ExpenseAdd extends StatefulWidget {
@@ -25,6 +28,10 @@ class _ExpenseAdd extends State<ExpenseAdd> {
   DateTime?
       selectedDate; //khai báo một biến selectedDate có kiểu dữ liệu là DateTime?,Khi khai báo biến selectedDate với kiểu dữ liệu DateTime?, đó có nghĩa là biến đó có thể chứa một giá trị của kiểu DateTime hoặc có thể là giá trị null
   Category selectedCategory = Category.food;
+  Category defaultCategory =
+      Category.food; // Giá trị mặc định cho DropdownButton
+  DateTime?
+      defaultDate; // Giá trị mặc định cho ngày được chọn (ban đầu là null)
 
   @override
   void dispose() {
@@ -69,7 +76,6 @@ class _ExpenseAdd extends State<ExpenseAdd> {
     });
   }
 
-
   //Nút submit
   void expenseSubmitData() {
     final enteredAmount = double.tryParse(amountController
@@ -110,111 +116,159 @@ class _ExpenseAdd extends State<ExpenseAdd> {
     Navigator.pop(context);
   }
 
+  //Nút clear
+  void clearData() {
+    titleController.clear(); //// Xóa giá trị trong TextField
+    amountController.clear();
+    setState(() {
+      selectedCategory = defaultCategory;
+      selectedDate = defaultDate;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
-      child: Column(
-        children: [
-          TextField(
-            controller: titleController, //Cách 1:saveTitleInput
-            maxLength: 50,
-            decoration: const InputDecoration(
-              label: Text('Title'),
+    final keyboardSpace = MediaQuery.of(context)
+        .viewInsets
+        .bottom; //biến keyboardSpace sẽ chứa giá trị chiều cao của không gian bàn phím hiển thị phía dưới
+    return LayoutBuilder(builder: (ctx, constraints) {
+      final width = constraints.maxWidth;
+      return SizedBox(
+        height: double
+            .infinity, // yêu cầu widget đó có chiều cao bằng với kích thước tối đa có thể trong không gian mà widget đó được đặt.
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, keyboardSpace + 16),
+            child: Column(
+              children: [
+                if (width >= 600)
+                  ReponsiveAdd1(
+                    amountController: amountController,
+                    titleController: titleController,
+                  )
+                else
+                  TextField(
+                    controller: titleController, //Cách 1:saveTitleInput
+                    maxLength: 50,
+                    decoration: const InputDecoration(
+                      label: Text('Title'),
+                    ),
+                  ),
+                if (width >= 600)
+                  ReponsiveAdd2(
+                    selectedCategory: selectedCategory,
+                    selectedDate: selectedDate,
+                    dropdownButton: dropdownButton,
+                    presentDayPicker: presentDayPicker,
+                  )
+                else
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: amountController,
+                          keyboardType: TextInputType
+                              .number, //Dữ liệu chỉ nhập số trên máy
+                          decoration: const InputDecoration(
+                            prefixText: 'VND ', //Ký hiệu VND
+                            label: Text('Amount'),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              selectedDate == null
+                                  ? 'Not Selected Date' //Nếu selectedDate là null, tức là ngày chưa được chọn, thì Text sẽ hiển thị chuỗi "Not Selected Date".
+                                  : formatter.format(
+                                      selectedDate!), //Nếu selectedDate không phải null, tức là đã có ngày được chọn, thì Text sẽ hiển thị giá trị của ngày đã chọn sau khi được định dạng bằng formatter.format(selectedDate!). selectedDate! sử dụng dấu thanh chắn (!) để gỡ bỏ cảnh báo về khả năng selectedDate có thể là null (null safety).
+                            ),
+                            IconButton(
+                              onPressed: presentDayPicker,
+                              icon: const Icon(Icons.calendar_month),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                const SizedBox(
+                  height: 16,
+                ),
+                if (width >= 600)
+                  ReponsiveAdd3(
+                    clearData: clearData,
+                    closeAdd: closeAdd,
+                    expenseSubmitData: expenseSubmitData,
+                  )
+                else
+                  Row(
+                    children: [
+                      DropdownButton(
+                        value: selectedCategory,
+                        items: Category.values.map((item) {
+                          return DropdownMenuItem(
+                            value: item,
+                            child: Text(item.name.toUpperCase()),
+                          );
+                        }).toList(),
+                        onChanged: dropdownButton,
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            //Style lại elevatedButton
+                            // backgroundColor: const Color.fromARGB(168, 18, 65, 219),
+                            shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )),
+                        onPressed: expenseSubmitData,
+                        child: const Text('Submit'),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            //Style lại elevatedButton
+                            // backgroundColor: const Color.fromARGB(168, 206, 219, 18),
+                            shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )),
+                        onPressed: () {
+                          titleController
+                              .clear(); //// Xóa giá trị trong TextField
+                          amountController.clear();
+                          setState(() {
+                            selectedCategory = defaultCategory;
+                            selectedDate = defaultDate;
+                          });
+                        },
+                        child: const Text('Clear'),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor: const Color.fromARGB(157, 255, 5, 5),
+                        ),
+                        onPressed: closeAdd,
+                        child: const Text('Close'),
+                      ),
+                    ],
+                  ),
+              ],
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: amountController,
-                  keyboardType:
-                      TextInputType.number, //Dữ liệu chỉ nhập số trên máy
-                  decoration: const InputDecoration(
-                    prefixText: 'VND ', //Ký hiệu VND
-                    label: Text('Amount'),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: 16,
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      selectedDate == null
-                          ? 'Not Selected Date' //Nếu selectedDate là null, tức là ngày chưa được chọn, thì Text sẽ hiển thị chuỗi "Not Selected Date".
-                          : formatter.format(
-                              selectedDate!), //Nếu selectedDate không phải null, tức là đã có ngày được chọn, thì Text sẽ hiển thị giá trị của ngày đã chọn sau khi được định dạng bằng formatter.format(selectedDate!). selectedDate! sử dụng dấu thanh chắn (!) để gỡ bỏ cảnh báo về khả năng selectedDate có thể là null (null safety).
-                    ),
-                    IconButton(
-                      onPressed: presentDayPicker,
-                      icon: const Icon(Icons.calendar_month),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Row(
-            children: [
-              DropdownButton(
-                value: selectedCategory,
-                items: Category.values.map((item) {
-                  return DropdownMenuItem(
-                    value: item,
-                    child: Text(item.name.toUpperCase()),
-                  );
-                }).toList(),
-                onChanged: dropdownButton,
-              ),
-              const Spacer(),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    //Style lại elevatedButton
-                    // backgroundColor: const Color.fromARGB(168, 18, 65, 219),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    )),
-                onPressed: expenseSubmitData,
-                child: const Text('Submit'),
-              ),
-              const SizedBox(
-                width: 6,
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    //Style lại elevatedButton
-                    // backgroundColor: const Color.fromARGB(168, 206, 219, 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    )),
-                onPressed: () {
-                  titleController.clear(); //// Xóa giá trị trong TextField
-                  amountController.clear();
-                },
-                child: const Text('Clear'),
-              ),
-              const SizedBox(
-                width: 6,
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color.fromARGB(157, 255, 5, 5),
-                ),
-                onPressed: closeAdd,
-                child: const Text('Close'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 }
