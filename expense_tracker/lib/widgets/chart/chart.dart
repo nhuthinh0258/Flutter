@@ -43,7 +43,7 @@ class Chart extends StatelessWidget {
       height: 180,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        gradient: LinearGradient(
+        gradient: LinearGradient(   //tạo hiệu ứng gradient tuyến tính
           colors: [
             Theme.of(context).colorScheme.primary.withOpacity(0.3),
             Theme.of(context).colorScheme.primary.withOpacity(0.0)

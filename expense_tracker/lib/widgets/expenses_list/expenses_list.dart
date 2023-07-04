@@ -19,14 +19,19 @@ class ExpensesList extends StatelessWidget {
     }
 
     return Dismissible(
-      key: ValueKey(
-        expenses[
-            index], //tạo ra một key duy nhất dựa trên giá trị của phần tử trong danh sách expenses.ValueKey(expenses[index]) sử dụng giá trị của phần tử expenses[index] như là giá trị để tạo key. Điều này đảm bảo rằng mỗi phần tử trong danh sách có một key duy nhất dựa trên giá trị của nó.
-      ),
+      key: ValueKey(expenses[
+              index] //tạo ra một key duy nhất dựa trên giá trị của phần tử trong danh sách expenses.ValueKey(expenses[index]) sử dụng giá trị của phần tử expenses[index] như là giá trị để tạo key. Điều này đảm bảo rằng mỗi phần tử trong danh sách có một key duy nhất dựa trên giá trị của nó.
+          ),
       background: Container(
-        color: Theme.of(context).colorScheme.error.withOpacity(0.75), //Thiết lập màu nền khi xóa 1 card
+        color: Theme.of(context)
+            .colorScheme
+            .error
+            .withOpacity(0.75), //Thiết lập màu nền khi xóa 1 card
         margin: EdgeInsets.symmetric(
-          horizontal: Theme.of(context).cardTheme.margin!.horizontal,   //Tạo margin khi card bị xóa
+          horizontal: Theme.of(context)
+              .cardTheme
+              .margin!
+              .horizontal, //Tạo margin khi card bị xóa
         ),
       ),
       onDismissed: dismissed,
