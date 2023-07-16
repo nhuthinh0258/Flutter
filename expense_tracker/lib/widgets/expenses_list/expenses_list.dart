@@ -12,7 +12,7 @@ class ExpensesList extends StatelessWidget {
   final List<Expense> expenses;
 
   Widget expen(context, index) {
-    void dismissed(direction) {
+    void dismissed(direction) {     //tạo hiệu ứng khi vuốt hoặc xóa các phần tử trong danh sách
       onRemoveExpense(
         expenses[index],
       );
@@ -42,8 +42,8 @@ class ExpensesList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
+  Widget build(BuildContext context) {  
+    return ListView.builder(      //xây dựng danh sách dựa trên một danh sách dữ liệu và builder function
       itemCount: expenses.length,
       itemBuilder: expen,
     );

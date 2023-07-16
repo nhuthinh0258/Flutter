@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:meals/model/category.dart';
 
 class CategoryGridItem extends StatelessWidget {
-  const CategoryGridItem({super.key, required this.category});
+  const CategoryGridItem({super.key, required this.category, required this.onSelectCategory});
 
   final Category category;
 
-  void onTap(){
+  final void Function() onSelectCategory;
 
-  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(   //tạo ra một phản ứng hồi khi người dùng nhấn vào nó, thường được sử dụng để tạo các phần tử có khả năng tương tác như nút (button) hoặc các mục trong danh sách (list item)
-      onTap: onTap,
+      onTap: onSelectCategory,
       splashColor: Theme.of(context).primaryColor,  //xác định màu sắc của hiệu ứng nước (splash effect) khi người dùng nhấn vào widget.
       borderRadius: BorderRadius.circular(16),
       child: Container(
