@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:meals/model/meal.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/meals.dart';
+import 'package:meals/widget/drawer_main.dart';
 
 class TabScreen extends StatefulWidget {
   const TabScreen({super.key});
@@ -54,6 +55,15 @@ class _TabScreenState extends State<TabScreen> {
     });
   }
 
+  void setScreen(String indentify){
+    if(indentify == 'filters'){
+
+    }
+    else{
+      Navigator.pop(context);//đóng màn hình hiện tại và trở lại màn hình trước đó
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget activePage = CategoryScreen(
@@ -74,6 +84,7 @@ class _TabScreenState extends State<TabScreen> {
       appBar: AppBar(
         title: Text(activePageTitle),
       ),
+      drawer:DrawerMain(onSelectScreen: setScreen,),
       body: activePage,
       bottomNavigationBar: BottomNavigationBar(
         //tạo một thanh điều hướng dưới cùng (bottom navigation bar) cho ứng dụng của mình
