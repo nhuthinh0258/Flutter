@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/tabs.dart';
 
 final theme = ThemeData(
@@ -22,8 +23,15 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        // Đăng ký các named routes và liên kết chúng với các màn hình tương ứng
+        '/first': (context) {
+          return const TabScreen(); //// Màn hình chính
+        },
+      },
       theme: theme,
-      home:const TabScreen(),
+      initialRoute:
+          '/first', //// Màn hình chính sẽ được mở khi ứng dụng khởi đầu
     );
   }
 }

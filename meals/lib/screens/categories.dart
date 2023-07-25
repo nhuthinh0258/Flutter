@@ -6,12 +6,13 @@ import 'package:meals/screens/meals.dart';
 import 'package:meals/widget/category_grid_item.dart';
 
 class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({super.key,required this.onToggleFavorite});
+  const CategoryScreen({super.key,required this.onToggleFavorite,required this.availableMeal});
 
   final void Function(Meal meal) onToggleFavorite;
+  final List<Meal> availableMeal ;
 
   void onSelectCategory(BuildContext context, Category category) {
-    final filterMeal = dummyMeals.where((meal) {
+    final filterMeal = availableMeal.where((meal) {
       //lọc các phần tử trong một danh sách dựa trên một điều kiện cho trước(ở đây là meal)
       return meal.categories.contains(category
           .id); //kiểm tra xem một danh sách categories của đối tượng meal có chứa một phần tử có giá trị bằng category.id hay không.
