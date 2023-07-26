@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:meals/model/meal.dart';
+import 'package:meals/provider/meal_provider.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/widget/drawer_main.dart';
-import 'package:meals/data/dummy_data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const kInitialFilter = {
   Filter.GlutenFree: false,
@@ -13,16 +14,16 @@ const kInitialFilter = {
   Filter.Vegan: false,
 };
 
-class TabScreen extends StatefulWidget {
+class TabScreen extends ConsumerStatefulWidget {
   const TabScreen({super.key});
 
   @override
-  State<TabScreen> createState() {
+  ConsumerState<TabScreen> createState() {
     return _TabScreenState();
   }
 }
 
-class _TabScreenState extends State<TabScreen> {
+class _TabScreenState extends ConsumerState<TabScreen> {
   int selectedPageIndex =
       0; //giá trị mặc định của biến selectedPageIndex là 0. Điều này có nghĩa là trang đầu tiên sẽ được chọn mặc định khi ứng dụng khởi chạy.
   final List<Meal> mealFavorite = []; //Tạo một danh sách mealFavorite rỗng
@@ -106,7 +107,8 @@ class _TabScreenState extends State<TabScreen> {
   @override
   Widget build(BuildContext context) {
     //Phương thức where lọc danh sách meal theo từng điều kiện
-    final availableMeal = dummyMeals.where((meal) {
+    final meals = ref.watch(mealProvider);  // sử dụng ref.watch() để theo dõi sự thay đổi của provider mealProvider và lấy giá trị hiện tại của nó.
+    final availableMeal = meals.where((meal) {
       //Kiểm tra xem bộ lọc selectedFilter[Filter.GlutenFree] đã được đặt hay chưa và kiểm tra meal có thuộc tính là true hay
       // false (nếu meal.isGlutenFree là true thì !meal.isGlutenFree là false)
       if (selectedFilter[Filter.GlutenFree]! && !meal.isGlutenFree) {
