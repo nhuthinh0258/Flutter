@@ -5,18 +5,19 @@ import 'package:meals/screens/detail.dart';
 import 'package:meals/widget/meal_item.dart';
 
 class MealScreen extends StatelessWidget {
-  const MealScreen({super.key, required this.meals, this.title,required this.onToggleFavorite});
+  const MealScreen({super.key, required this.meals, this.title});
 
-  final String? title;  //title có thể nhận giá trị String hoặc null. 
+  final String? title; //title có thể nhận giá trị String hoặc null.
   final List<Meal> meals;
-  final void Function(Meal meal) onToggleFavorite;
 
   void onSelectMeal(BuildContext context, Meal meal) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: ((ctx) {
-          return DetailScreen(meal: meal,onToggleFavorite:onToggleFavorite,);
+          return DetailScreen(
+            meal: meal,
+          );
         }),
       ),
     );
@@ -69,13 +70,14 @@ class MealScreen extends StatelessWidget {
       );
     }
 
-    if(title == null){  //trường hợp title là null, nó sẽ trả về content và không tiếp tục xử lý các phần code phía dưới
+    if (title == null) {
+      //trường hợp title là null, nó sẽ trả về content và không tiếp tục xử lý các phần code phía dưới
       return content;
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title!),  //title sẽ ko bao giờ null
+        title: Text(title!), //title sẽ ko bao giờ null
       ),
       body: content,
     );

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:meals/model/meal.dart';
 import 'package:meals/provider/meal_provider.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters.dart';
 import 'package:meals/screens/meals.dart';
 import 'package:meals/widget/drawer_main.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meals/provider/meal_favorites_provider.dart';
+import 'package:meals/provider/filter_provider.dart';
 
 const kInitialFilter = {
   Filter.GlutenFree: false,
@@ -14,6 +15,7 @@ const kInitialFilter = {
   Filter.Vegan: false,
 };
 
+//ConsumerStatefulWidget được gọi khi sử dụng Provider
 class TabScreen extends ConsumerStatefulWidget {
   const TabScreen({super.key});
 
@@ -26,7 +28,7 @@ class TabScreen extends ConsumerStatefulWidget {
 class _TabScreenState extends ConsumerState<TabScreen> {
   int selectedPageIndex =
       0; //giá trị mặc định của biến selectedPageIndex là 0. Điều này có nghĩa là trang đầu tiên sẽ được chọn mặc định khi ứng dụng khởi chạy.
-  final List<Meal> mealFavorite = []; //Tạo một danh sách mealFavorite rỗng
+
   
   //selectedFilter sẽ lưu trữ các bộ lọc có kiểu Filter (được định nghĩa từ enum Filter), và mỗi bộ lọc sẽ có giá trị bool 
   //tương ứng (được đánh giá bởi true hoặc false)
@@ -35,35 +37,7 @@ class _TabScreenState extends ConsumerState<TabScreen> {
   //selectedFilter sẽ thay đổi tương ứng để thể hiện việc chọn bộ lọc của người dùng
   Map<Filter, bool> selectedFilter = kInitialFilter;
 
-  void messageMeal(String message) {
-    ScaffoldMessenger.of(context)
-        .clearSnackBars(); //xóa tất cả các snack bar đang hiển thị trong Scaffold hiện tại.
-    ScaffoldMessenger.of(context).showSnackBar(
-      //hiển thị thông báo tạm thời (snack bar) cho người dùng
-      SnackBar(
-        duration: const Duration(seconds: 4), //Thời gian hiển thị 5s
-        content: Text(message),
-      ),
-    );
-  }
 
-  void toggleFavoriteMealStatus(Meal meal) {
-    final isExisting = mealFavorite.contains(
-        meal); //kiểm tra xem món ăn meal có tồn tại trong danh sách mealFavorite hay không.
-    //Kết quả của phương thức contains() là true nếu món ăn meal được tìm thấy trong danh sách mealFavorite, và false nếu không tìm thấy.
-
-    setState(() {
-      if (isExisting == true) {
-        mealFavorite.remove(
-            meal); // Nếu món ăn đã tồn tại trong danh sách yêu thích, hãy loại bỏ nó
-        messageMeal('Đã xóa món ăn khỏi danh sách yêu thích');
-      } else {
-        mealFavorite.add(
-            meal); // Nếu món ăn chưa tồn tại trong danh sách yêu thích, hãy thêm nó vào
-        messageMeal('Đã thêm món ăn vào danh sách yêu thích');
-      }
-    });
-  }
 
   void selectedPage(int index) {
     setState(() {
@@ -110,7 +84,7 @@ class _TabScreenState extends ConsumerState<TabScreen> {
     final meals = ref.watch(mealProvider);  // sử dụng ref.watch() để theo dõi sự thay đổi của provider mealProvider và lấy giá trị hiện tại của nó.
     final availableMeal = meals.where((meal) {
       //Kiểm tra xem bộ lọc selectedFilter[Filter.GlutenFree] đã được đặt hay chưa và kiểm tra meal có thuộc tính là true hay
-      // false (nếu meal.isGlutenFree là true thì !meal.isGlutenFree là false)
+      // false (nếu meal.isGlutenFree là true và !meal.isGlutenFree là false)
       if (selectedFilter[Filter.GlutenFree]! && !meal.isGlutenFree) {
         return false;
       }
@@ -128,15 +102,14 @@ class _TabScreenState extends ConsumerState<TabScreen> {
 
     Widget activePage = CategoryScreen(
       availableMeal: availableMeal,
-      onToggleFavorite: toggleFavoriteMealStatus,
     );
     var activePageTitle = 'Select category you want';
 
     if (selectedPageIndex == 1) {
       //Nếu selectedPageIndex có giá trị bằng 1, nghĩa là người dùng đã chọn trang "Favorites"
+      final mealFavorite = ref.watch(mealFavoritesNotifier);
       activePage = MealScreen(
         meals: mealFavorite,
-        onToggleFavorite: toggleFavoriteMealStatus,
       );
       activePageTitle = 'Favorites';
     }

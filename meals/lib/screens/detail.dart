@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals/model/meal.dart';
+import 'package:meals/provider/meal_favorites_provider.dart';
 
-class DetailScreen extends StatelessWidget {
-  const DetailScreen({super.key, required this.meal,required this.onToggleFavorite});
+class DetailScreen extends ConsumerWidget {
+  const DetailScreen({super.key, required this.meal});
 
   final Meal meal;
-  final void Function(Meal meal) onToggleFavorite;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     Widget buildContainer(Widget child) {
       return Container(
         decoration: BoxDecoration(
@@ -27,8 +28,23 @@ class DetailScreen extends StatelessWidget {
         title: Text(meal.title),
         actions: [
           IconButton(
-            onPressed: (){
-              onToggleFavorite(meal);
+            onPressed: () {
+              // sử dụng ref.read() để đọc và sử dụng mealFavoritesNotifier.notifier để truy cập vào phương thức
+              //toggleFavoriteMealStatus của mealFavoritesNotifier
+              final wasAdded = ref
+                  .read(mealFavoritesNotifier
+                      .notifier) //được sử dụng để truy cập đối tượng "notifier" của provider
+                  .toggleFavoriteMealStatus(meal);
+
+              ScaffoldMessenger.of(context)
+                  .clearSnackBars(); //xóa tất cả các snack bar đang hiển thị trong Scaffold hiện tại.
+              ScaffoldMessenger.of(context).showSnackBar(
+                //hiển thị thông báo tạm thời (snack bar) cho người dùng
+                SnackBar(
+
+                  content: Text(wasAdded ? 'Thêm thành công vào danh sách' : 'Đã xóa món khỏi danh sách'),
+                ),
+              );
             },
             icon: const Icon(Icons.star),
           ),
@@ -41,9 +57,9 @@ class DetailScreen extends StatelessWidget {
               meal.imageUrl,
               height: 300,
               width: double
-                  .infinity, ////Ảnh sẽ chiếm hết không gian theo chiều ngang nhiều nhất có thể
+                  .infinity, //Ảnh sẽ chiếm hết không gian theo chiều ngang nhiều nhất có thể
               fit: BoxFit
-                  .cover, ////xác định cách hiển thị nội dung của một widget trong một không gian giới hạn, ở đây sẽ được tự động co dãn mà vẫn giữ ti lệ gốc
+                  .cover, //xác định cách hiển thị nội dung của một widget trong một không gian giới hạn, ở đây sẽ được tự động co dãn mà vẫn giữ ti lệ gốc
             ),
             const SizedBox(height: 14),
             buildContainer(

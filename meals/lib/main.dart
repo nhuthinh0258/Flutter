@@ -14,7 +14,7 @@ final theme = ThemeData(
 
 void main() {
   runApp(
-    const ProviderScope(
+    const ProviderScope(  //Bọc widget ProvierScope khi sử dụng riverpod
       child: App(),
     ),
   );

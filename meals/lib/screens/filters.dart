@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:meals/provider/filter_provider.dart';
 
-enum Filter {
-  //enum là một kiểu dữ liệu đặc biệt dùng để định nghĩa một tập hợp các hằng số (constants) có tên
-  GlutenFree,
-  LactoseFree, //Hằng số
-  Vegan,
-  Vegetarian,
-}
 
 class FilterScreen extends StatefulWidget {
   const FilterScreen({super.key,required this.currentFilter});

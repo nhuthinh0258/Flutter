@@ -6,9 +6,8 @@ import 'package:meals/screens/meals.dart';
 import 'package:meals/widget/category_grid_item.dart';
 
 class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({super.key,required this.onToggleFavorite,required this.availableMeal});
+  const CategoryScreen({super.key,required this.availableMeal});
 
-  final void Function(Meal meal) onToggleFavorite;
   final List<Meal> availableMeal ;
 
   void onSelectCategory(BuildContext context, Category category) {
@@ -24,7 +23,6 @@ class CategoryScreen extends StatelessWidget {
       MaterialPageRoute(builder: ((ctx) {
         // widget trong Flutter được sử dụng để xác định một màn hình mới trong ứng dụng
         return MealScreen(
-          onToggleFavorite: onToggleFavorite,
           meals: filterMeal,
           title: category.title,
         );
