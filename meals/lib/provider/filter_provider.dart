@@ -18,9 +18,15 @@ class FilterNotifier extends StateNotifier<Map<Filter, bool>> {
           Filter.Vegetarian: false,
           Filter.Vegan: false,
         });
+  void setFilters(Map<Filter,bool> ChosenFilters){
+    state = ChosenFilters;
+  }
 
   void setFilter(Filter filter, bool isActive) {
-    state = {...state, filter: isActive};
+    state = {
+      ...state,
+      filter: isActive,
+    };
   }
 }
 

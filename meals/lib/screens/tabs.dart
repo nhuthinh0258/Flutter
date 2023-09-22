@@ -29,15 +29,11 @@ class _TabScreenState extends ConsumerState<TabScreen> {
   int selectedPageIndex =
       0; //giá trị mặc định của biến selectedPageIndex là 0. Điều này có nghĩa là trang đầu tiên sẽ được chọn mặc định khi ứng dụng khởi chạy.
 
-  
-  //selectedFilter sẽ lưu trữ các bộ lọc có kiểu Filter (được định nghĩa từ enum Filter), và mỗi bộ lọc sẽ có giá trị bool 
+  //selectedFilter sẽ lưu trữ các bộ lọc có kiểu Filter (được định nghĩa từ enum Filter), và mỗi bộ lọc sẽ có giá trị bool
   //tương ứng (được đánh giá bởi true hoặc false)
-  //selectedFilter sẽ ban đầu có giá trị là một Map chứa tất cả các bộ lọc, và tất cả các bộ lọc đều được đánh giá là false, 
-  //tức là người dùng chưa chọn bất kỳ bộ lọc nào. Sau đó, khi người dùng thực hiện chọn các bộ lọc, giá trị của 
+  //selectedFilter sẽ ban đầu có giá trị là một Map chứa tất cả các bộ lọc, và tất cả các bộ lọc đều được đánh giá là false,
+  //tức là người dùng chưa chọn bất kỳ bộ lọc nào. Sau đó, khi người dùng thực hiện chọn các bộ lọc, giá trị của
   //selectedFilter sẽ thay đổi tương ứng để thể hiện việc chọn bộ lọc của người dùng
-  Map<Filter, bool> selectedFilter = kInitialFilter;
-
-
 
   void selectedPage(int index) {
     setState(() {
@@ -60,41 +56,38 @@ class _TabScreenState extends ConsumerState<TabScreen> {
       //để truy xuất đến giá trị tương ứng (value). Map<Filter, bool> cho biết rằng trong Map đó, các key là kiểu dữ liệu
       //Filter (được định nghĩa trong enum Filter) và các value là kiểu dữ liệu bool (boolean).
 
-      final result = await Navigator.push<Map<Filter, bool>>(
+      await Navigator.push<Map<Filter, bool>>(
         //phương thức trong Flutter để chuyển đổi giữa các màn hình (routes) trong ứng dụng
         context,
         MaterialPageRoute(
           // widget trong Flutter được sử dụng để xác định một màn hình mới trong ứng dụng
           builder: ((ctx) {
-            return FilterScreen(currentFilter: selectedFilter);
+            return const FilterScreen();
           }),
         ),
       );
-      setState(() {
-        //toán tử ?? sẽ kiểm tra xem result có null hay không, nếu null thì nó được thay thế bằng giá trị mặc định là null
-        //(kInitialFilter), nếu không phải null, giá trị của result được gán cho selectedFilter
-        selectedFilter = result ?? kInitialFilter;
-      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     //Phương thức where lọc danh sách meal theo từng điều kiện
-    final meals = ref.watch(mealProvider);  // sử dụng ref.watch() để theo dõi sự thay đổi của provider mealProvider và lấy giá trị hiện tại của nó.
+    final meals = ref.watch(
+        mealProvider); // sử dụng ref.watch() để theo dõi sự thay đổi của provider mealProvider và lấy giá trị hiện tại của nó.
+    final activeFilters = ref.watch(filterNotifier);
     final availableMeal = meals.where((meal) {
       //Kiểm tra xem bộ lọc selectedFilter[Filter.GlutenFree] đã được đặt hay chưa và kiểm tra meal có thuộc tính là true hay
       // false (nếu meal.isGlutenFree là true và !meal.isGlutenFree là false)
-      if (selectedFilter[Filter.GlutenFree]! && !meal.isGlutenFree) {
+      if (activeFilters[Filter.GlutenFree]! && !meal.isGlutenFree) {
         return false;
       }
-      if (selectedFilter[Filter.LactoseFree]! && !meal.isLactoseFree) {
+      if (activeFilters[Filter.LactoseFree]! && !meal.isLactoseFree) {
         return false;
       }
-      if (selectedFilter[Filter.Vegan]! && !meal.isVegan) {
+      if (activeFilters[Filter.Vegan]! && !meal.isVegan) {
         return false;
       }
-      if (selectedFilter[Filter.Vegetarian]! && !meal.isVegetarian) {
+      if (activeFilters[Filter.Vegetarian]! && !meal.isVegetarian) {
         return false;
       }
       return true;
