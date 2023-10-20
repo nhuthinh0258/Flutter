@@ -16,9 +16,7 @@ class FilterScreen extends ConsumerWidget {
 
   //đặt trạng thái của bộ lọc Lactose Free trong provider filterNotifier dựa trên giá trị isChecked.
     void checkFilter2(bool isChecked) {
-      ref
-          .read(filterNotifier.notifier)
-          .setFilter(Filter.LactoseFree, isChecked);
+      ref.read(filterNotifier.notifier).setFilter(Filter.LactoseFree, isChecked);
     }
 
   //đặt trạng thái của bộ lọc Vegan trong provider filterNotifier dựa trên giá trị isChecked.

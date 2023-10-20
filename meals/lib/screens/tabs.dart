@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:meals/provider/meal_provider.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters.dart';
 import 'package:meals/screens/meals.dart';
@@ -71,27 +70,7 @@ class _TabScreenState extends ConsumerState<TabScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //Phương thức where lọc danh sách meal theo từng điều kiện
-    final meals = ref.watch(
-        mealProvider); // sử dụng ref.watch() để theo dõi sự thay đổi của provider mealProvider và lấy giá trị hiện tại của nó.
-    final activeFilters = ref.watch(filterNotifier);
-    final availableMeal = meals.where((meal) {
-      //Kiểm tra xem bộ lọc selectedFilter[Filter.GlutenFree] đã được đặt hay chưa và kiểm tra meal có thuộc tính là true hay
-      // false (nếu meal.isGlutenFree là true và !meal.isGlutenFree là false)
-      if (activeFilters[Filter.GlutenFree]! && !meal.isGlutenFree) {
-        return false;
-      }
-      if (activeFilters[Filter.LactoseFree]! && !meal.isLactoseFree) {
-        return false;
-      }
-      if (activeFilters[Filter.Vegan]! && !meal.isVegan) {
-        return false;
-      }
-      if (activeFilters[Filter.Vegetarian]! && !meal.isVegetarian) {
-        return false;
-      }
-      return true;
-    }).toList();
+    final availableMeal = ref.watch(filteredMealProvider);
 
     Widget activePage = CategoryScreen(
       availableMeal: availableMeal,
