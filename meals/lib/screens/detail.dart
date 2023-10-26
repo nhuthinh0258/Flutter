@@ -23,6 +23,9 @@ class DetailScreen extends ConsumerWidget {
       );
     }
 
+    final favoriteMeal = ref.watch(mealFavoritesNotifier);
+    final isActive = favoriteMeal.contains(meal);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(meal.title),
@@ -46,7 +49,7 @@ class DetailScreen extends ConsumerWidget {
                 ),
               );
             },
-            icon: const Icon(Icons.star),
+            icon: Icon(isActive ? Icons.star : Icons.star_border),
           ),
         ],
       ),
