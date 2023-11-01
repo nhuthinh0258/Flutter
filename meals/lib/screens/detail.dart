@@ -44,12 +44,24 @@ class DetailScreen extends ConsumerWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 //hiển thị thông báo tạm thời (snack bar) cho người dùng
                 SnackBar(
-
-                  content: Text(wasAdded ? 'Thêm thành công vào danh sách' : 'Đã xóa món khỏi danh sách'),
+                  content: Text(wasAdded
+                      ? 'Thêm thành công vào danh sách'
+                      : 'Đã xóa món khỏi danh sách'),
                 ),
               );
             },
-            icon: Icon(isActive ? Icons.star : Icons.star_border),
+            icon: AnimatedSwitcher(
+              duration: const Duration(
+                  milliseconds:
+                      300), //thời gian mà một hoạt ảnh hoặc chuyển đổi sẽ diễn ra
+              transitionBuilder: (child, animation) {
+                return RotationTransition(
+                  turns: Tween(begin: 0.8,end: 1.0).animate(animation),   //xác định số lần quay một widget con theo chiều kim đồng hồ.
+                  child: child,
+                );
+              },
+              child: Icon(isActive ? Icons.star : Icons.star_border, key: ValueKey(favoriteMeal),),
+            ),
           ),
         ],
       ),

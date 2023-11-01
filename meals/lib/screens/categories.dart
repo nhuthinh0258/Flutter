@@ -95,9 +95,15 @@ class _CategoryScreenState extends State<CategoryScreen>
               ).toList()
             ]),
         builder: (context, child) {
-          return Padding(
-            padding: EdgeInsets.only(
-              top: 100 - animationController.value * 100,
+          return SlideTransition(
+            position: Tween(
+              begin: const Offset(0, 0.3),
+              end: const Offset(0, 0),
+            ).animate(
+              CurvedAnimation(
+                parent: animationController,
+                curve: Curves.ease,         //xác định đường cong thời gian (timing curve) cho một hoạt ảnh (animation)
+              ),
             ),
             child: child,
           );
