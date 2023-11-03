@@ -79,7 +79,7 @@ class DetailScreen extends ConsumerWidget {
             const SizedBox(height: 14),
             buildContainer(
               Text(
-                'Ingredients',
+                'Hàm lượng dinh dưỡng',
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                     ),
@@ -124,7 +124,7 @@ class DetailScreen extends ConsumerWidget {
             const SizedBox(height: 14),
             buildContainer(
               Text(
-                'Steps',
+                'chế biến',
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                     ),

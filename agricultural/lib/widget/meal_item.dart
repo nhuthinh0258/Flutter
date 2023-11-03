@@ -4,7 +4,7 @@ import 'package:meals/widget/meal_item_trait.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class MealItem extends StatelessWidget {
-  const MealItem({super.key, required this.meal,required this.onSelectMeal});
+  const MealItem({super.key, required this.meal, required this.onSelectMeal});
 
   final Meal meal;
   final void Function(Meal meal) onSelectMeal;
@@ -14,9 +14,11 @@ class MealItem extends StatelessWidget {
         meal.complexity.name.substring(1);
   }
 
-    String get affordabilityText {
-    return meal.affordability.name[0].toUpperCase() +
-        meal.affordability.name.substring(1);
+  // String get affordabilityText {
+  // return meal.affordability.name[0].toUpperCase() +
+  //     meal.affordability.name.substring(1);
+  String get affordabilityText {
+    return meal.affordability.toString();
   }
 
   @override
@@ -33,7 +35,7 @@ class MealItem extends StatelessWidget {
       elevation:
           2, //xác định độ nổi của một widget trong giao diện, giá trị càng lớn độ nổi càng cao
       child: InkWell(
-        onTap: (){
+        onTap: () {
           onSelectMeal(meal);
         },
         child: Stack(

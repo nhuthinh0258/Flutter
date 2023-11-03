@@ -28,12 +28,6 @@ class _TabScreenState extends ConsumerState<TabScreen> {
   int selectedPageIndex =
       0; //giá trị mặc định của biến selectedPageIndex là 0. Điều này có nghĩa là trang đầu tiên sẽ được chọn mặc định khi ứng dụng khởi chạy.
 
-  //selectedFilter sẽ lưu trữ các bộ lọc có kiểu Filter (được định nghĩa từ enum Filter), và mỗi bộ lọc sẽ có giá trị bool
-  //tương ứng (được đánh giá bởi true hoặc false)
-  //selectedFilter sẽ ban đầu có giá trị là một Map chứa tất cả các bộ lọc, và tất cả các bộ lọc đều được đánh giá là false,
-  //tức là người dùng chưa chọn bất kỳ bộ lọc nào. Sau đó, khi người dùng thực hiện chọn các bộ lọc, giá trị của
-  //selectedFilter sẽ thay đổi tương ứng để thể hiện việc chọn bộ lọc của người dùng
-
   void selectedPage(int index) {
     setState(() {
       selectedPageIndex =
