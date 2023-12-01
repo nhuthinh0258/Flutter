@@ -4,39 +4,33 @@ import 'package:shopping_app/models/category.dart';
 import 'package:shopping_app/models/grocery_item.dart';
 import 'package:shopping_app/style.dart';
 
-class NewItem extends StatefulWidget {
-  const NewItem({super.key});
+class UpdateItem extends StatefulWidget {
+  const UpdateItem({super.key, required this.product});
+
+  final GroceryItem product;
+
   @override
-  State<NewItem> createState() {
-    return _NewItemState();
+  State<UpdateItem> createState() {
+    return _UpdateItemState();
   }
 }
 
-class _NewItemState extends State<NewItem> {
-  //GlobalKey<FormState>, được sử dụng để duy trì trạng thái của Form. Nó cho phép truy cập vào trạng thái của Form từ bất kỳ đâu 
-  //trong widget tree
+class _UpdateItemState extends State<UpdateItem> {
   final formKey = GlobalKey<FormState>();
-  var enteredNote = '';
-  var enteredTenSp = '';
-  var enteredSoluongSp = 1;
-  Category? selectedLoaiSp;
+  var updateNote = '';
+  var updateTenSp = '';
+  var updateSoluongSp = 1;
+  Category? updateLoaiSp;
 
-
-  //Xử lý nút thêm sản phẩm
-  void buttonAddProduct() {
-    //kiểm tra trạng thái của form thông qua valiedate() các formField
-    if (formKey.currentState!.validate()) {
-      //Nếu đúng thì lưu lại
-      formKey.currentState!.save();
-      //Đóng màn hình thêm sản phẩm sau khi thêm sản phẩm xong
-      Navigator.of(context).pop(GroceryItem(
-        id: DateTime.now().toString(),
-        name: enteredTenSp,
-        quantity: enteredSoluongSp,
-        category: selectedLoaiSp!,
-        note: enteredNote,
-      ));
-    }
+  //Hàm initState() chỉ được gọi 1 lần và dùng trong trường hợp gọi lại giá trị ban đầu
+  @override
+  void initState() {
+    super.initState();
+    //widget: Là tham chiếu đến instance của StatefulWidget mà State này đang quản lý.
+    updateNote = widget.product.note ?? '';
+    updateTenSp = widget.product.name;
+    updateSoluongSp = widget.product.quantity;
+    updateLoaiSp = widget.product.category;
   }
 
   //Hàm validator kiểm tra tên sản phẩm
@@ -76,19 +70,33 @@ class _NewItemState extends State<NewItem> {
 
   void onSelectedLoaisp(value) {
     setState(() {
-      selectedLoaiSp = value!;
+      updateLoaiSp = value!;
     });
   }
 
-  void buttonClearProduct() {
-    formKey.currentState!.reset();
+  void buttonUpdateProduct() {
+    //kiểm tra trạng thái của form thông qua valiedate() các formField
+    if (formKey.currentState!.validate()) {
+      //Nếu đúng thì lưu lại
+      formKey.currentState!.save();
+      //Đóng màn hình cập nhật sản phẩm sau khi cập nhật sản phẩm xong
+      Navigator.of(context).pop(GroceryItem(
+        id: widget.product.id,
+        name: updateTenSp,
+        quantity: updateSoluongSp,
+        category: updateLoaiSp!,
+        note: updateNote,
+      ));
+    }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Thêm sản phẩm mới'),
+        title: const Text('Cập nhật sản phẩm'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -97,6 +105,7 @@ class _NewItemState extends State<NewItem> {
           child: Column(
             children: [
               TextFormField(
+                initialValue: updateTenSp,
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
@@ -113,7 +122,7 @@ class _NewItemState extends State<NewItem> {
                 ),
                 validator: validatorNameProduct,
                 onSaved: (value) {
-                  enteredTenSp = value!;
+                  updateTenSp = value!;
                 },
               ),
               const SizedBox(
@@ -128,7 +137,7 @@ class _NewItemState extends State<NewItem> {
                         fontSize: 16,
                         color: Colors.black,
                       ),
-                      initialValue: '1',
+                      initialValue: updateSoluongSp.toString(),
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         //style lại thông báo lỗi của validator
@@ -143,7 +152,7 @@ class _NewItemState extends State<NewItem> {
                       validator: validatorQuantityProduct,
                       //lưu giá trị của field
                       onSaved: (value) {
-                        enteredSoluongSp = int.parse(value!);
+                        updateSoluongSp = int.parse(value!);
                       },
                     ),
                   ),
@@ -157,7 +166,7 @@ class _NewItemState extends State<NewItem> {
                           canvasColor:
                               Theme.of(context).scaffoldBackgroundColor),
                       child: DropdownButtonFormField(
-                        value: selectedLoaiSp,
+                        value: updateLoaiSp,
                         validator: validatorCategoryProduct,
                         decoration: const InputDecoration(
                           errorStyle: TextStyle(color: Colors.red),
@@ -211,7 +220,7 @@ class _NewItemState extends State<NewItem> {
                         ],
                         onChanged: (value) {
                           setState(() {
-                            selectedLoaiSp = value!;
+                            updateLoaiSp = value!;
                           });
                         },
                       ),
@@ -223,6 +232,7 @@ class _NewItemState extends State<NewItem> {
                 height: 20,
               ),
               TextFormField(
+                initialValue: updateNote,
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
@@ -239,7 +249,7 @@ class _NewItemState extends State<NewItem> {
                 //Số dòng tối đa
                 maxLines: 5,
                 onSaved: (value) {
-                  enteredNote = value!;
+                  updateNote = value!;
                 },
               ),
               const SizedBox(
@@ -248,14 +258,8 @@ class _NewItemState extends State<NewItem> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    onPressed: buttonClearProduct,
-                    child: const Style(
-                      outputText: 'Clear',
-                    ),
-                  ),
                   ElevatedButton(
-                    onPressed: buttonAddProduct,
+                    onPressed: buttonUpdateProduct,
                     style: ButtonStyle(
                       //Thay đổi màu nền của button theo màu theme đã khai báo
                       backgroundColor: MaterialStateProperty.all(
@@ -263,7 +267,7 @@ class _NewItemState extends State<NewItem> {
                       ),
                     ),
                     child: const Style(
-                      outputText: 'Thêm sản phẩm',
+                      outputText: 'Cập nhật sản phẩm',
                     ),
                   ),
                 ],

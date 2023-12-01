@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color.fromARGB(255, 240, 235, 235),
         primaryColorLight: const Color.fromARGB(255, 230, 228, 193),
+        primaryColorDark: const Color.fromARGB(255, 161, 161, 147)
       ),
       home: const Groceries(),
     );
