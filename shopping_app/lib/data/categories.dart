@@ -14,17 +14,17 @@ const categories = {
     color: Color.fromARGB(255, 145, 255, 0),
   ),
     'C3': Category(
-    id: 'C1',
+    id: 'C3',
     name: 'Củ',
     color: Color.fromARGB(255, 6, 12, 9),
   ),
     'C4': Category(
-    id: 'C1',
+    id: 'C4',
     name: 'Hoa',
     color: Color.fromARGB(255, 2, 169, 86),
   ),
     'C5': Category(
-    id: 'C1',
+    id: 'C5',
     name: 'Củ',
     color: Color.fromARGB(255, 23, 59, 41),
   ),

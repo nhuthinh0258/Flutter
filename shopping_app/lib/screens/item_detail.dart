@@ -9,16 +9,11 @@ class ItemDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(product.name),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        //Kiểm tra phần note có null hay không, nếu null thì không hiển thị gì (SizedBox.shrink()), nếu có hiển thị ra phần ghi chú
-        child: product.note != null
+        appBar: AppBar(
+          title: Text(product.name),
+        ),
+        body: product.note != null
             ? Style(outputText: product.note!)
-            : const SizedBox.shrink(),
-      ),
-    );
+            : const SizedBox.shrink());
   }
 }

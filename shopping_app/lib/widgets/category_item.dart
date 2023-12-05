@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_app/screens/update_item.dart';
 import 'package:shopping_app/style.dart';
 import 'package:shopping_app/models/grocery_item.dart';
 
@@ -9,23 +8,16 @@ class CategoryItem extends StatelessWidget {
       required this.onSelectedItem,
       required this.listGroceryItem,
       required this.onRemoveItem,
-      required this.onUpdateItem});
+      required this.onUpdateItem,
+      required this.isLoading,
+      required this.error});
 
   final void Function(GroceryItem product) onSelectedItem;
   final void Function(GroceryItem product) onRemoveItem;
   final void Function(GroceryItem product) onUpdateItem;
   final List<GroceryItem> listGroceryItem;
-
-  // void updateItem(BuildContext context, GroceryItem product) async {
-  //   final updateItem = await Navigator.of(context).push<GroceryItem>(
-  //     MaterialPageRoute(builder: (ctx) {
-  //       return UpdateItem(product: product,);
-  //     }),
-  //   );
-  //   if(updateItem != null){
-  //     setState
-  //   }
-  // }
+  final bool isLoading;
+  final String? error;
 
   @override
   Widget build(BuildContext context) {
@@ -60,16 +52,42 @@ class CategoryItem extends StatelessWidget {
                       const SizedBox(
                         height: 2,
                       ),
-                      Style(
-                          outputText:
-                              'Số lượng: ${listGroceryItem[index].quantity.toString()}')
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Số lượng: ${listGroceryItem[index].quantity.toString()}',
+                              style: const TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 26,
+                          ),
+                          Container(
+                            width: 12,
+                            height: 12,
+                            color: listGroceryItem[index].category.color,
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Text(
+                            listGroceryItem[index].category.name,
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                   //leadng Thường được sử dụng cho biểu tượng hoặc hình ảnh.
                   leading: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(6),
-                      color: listGroceryItem[index].category.color,
+                      color: Colors.grey,
                     ),
                     width: 100,
                     height: 60,
@@ -124,6 +142,19 @@ class CategoryItem extends StatelessWidget {
         ],
       ),
     );
+
+    //Quản lý trạng thái Loading
+    if (isLoading) {
+      mainContent = const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (error != null) {
+      mainContent = Center(
+        child: Style(outputText: error!,),
+      );
+    }
 
     if (listGroceryItem.isNotEmpty) {
       mainContent = ListView.builder(

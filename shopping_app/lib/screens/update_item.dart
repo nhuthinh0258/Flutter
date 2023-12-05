@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shopping_app/data/categories.dart';
 import 'package:shopping_app/models/category.dart';
 import 'package:shopping_app/models/grocery_item.dart';
 import 'package:shopping_app/style.dart';
+import 'package:http/http.dart' as http;
 
 class UpdateItem extends StatefulWidget {
   const UpdateItem({super.key, required this.product});
@@ -21,6 +24,8 @@ class _UpdateItemState extends State<UpdateItem> {
   var updateTenSp = '';
   var updateSoluongSp = 1;
   Category? updateLoaiSp;
+  //Biến trạng thái "isUpdating" cho thấy quá trình cập nhật chưa diễn ra
+  var isUpdating = false;
 
   //Hàm initState() chỉ được gọi 1 lần và dùng trong trường hợp gọi lại giá trị ban đầu
   @override
@@ -74,23 +79,40 @@ class _UpdateItemState extends State<UpdateItem> {
     });
   }
 
-  void buttonUpdateProduct() {
+  void buttonUpdateProduct() async {
     //kiểm tra trạng thái của form thông qua valiedate() các formField
     if (formKey.currentState!.validate()) {
       //Nếu đúng thì lưu lại
       formKey.currentState!.save();
-      //Đóng màn hình cập nhật sản phẩm sau khi cập nhật sản phẩm xong
-      Navigator.of(context).pop(GroceryItem(
-        id: widget.product.id,
-        name: updateTenSp,
-        quantity: updateSoluongSp,
-        category: updateLoaiSp!,
-        note: updateNote,
-      ));
+      setState(() {
+        isUpdating = true;
+      });
+      final url = Uri.https(
+          'vietfresh-6acc6-default-rtdb.asia-southeast1.firebasedatabase.app',
+          'viet-fresh-user2/${widget.product.id}.json');
+      ////http.put -- yêu cầu cập nhật dữ liệu từ firebase
+      final response = await http.put(url,
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'name': updateTenSp,
+            'quantity': updateSoluongSp,
+            'category': updateLoaiSp!.name,
+            'note': updateNote,
+          }));
+      if (!context.mounted) return;
+      //Kiểm tra trạng thái response = 200 không
+      if (response.statusCode == 200) {
+        //Đóng màn hình cập nhật sản phẩm sau khi cập nhật sản phẩm xong
+        Navigator.of(context).pop(GroceryItem(
+          id: widget.product.id,
+          name: updateTenSp,
+          quantity: updateSoluongSp,
+          category: updateLoaiSp!,
+          note: updateNote,
+        ));
+      }
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -259,17 +281,20 @@ class _UpdateItemState extends State<UpdateItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                    onPressed: buttonUpdateProduct,
-                    style: ButtonStyle(
-                      //Thay đổi màu nền của button theo màu theme đã khai báo
-                      backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).primaryColorLight,
+                      onPressed: isUpdating ? null : buttonUpdateProduct,
+                      style: ButtonStyle(
+                        //Thay đổi màu nền của button theo màu theme đã khai báo
+                        backgroundColor: MaterialStateProperty.all(
+                          Theme.of(context).primaryColorLight,
+                        ),
                       ),
-                    ),
-                    child: const Style(
-                      outputText: 'Cập nhật sản phẩm',
-                    ),
-                  ),
+                      child: isUpdating
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(),
+                            )
+                          : const Style(outputText: "Cập nhật sản phẩm")),
                 ],
               )
             ],

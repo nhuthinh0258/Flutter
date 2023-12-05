@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shopping_app/data/categories.dart';
 import 'package:shopping_app/models/category.dart';
 import 'package:shopping_app/models/grocery_item.dart';
 import 'package:shopping_app/style.dart';
+import 'package:http/http.dart' as http;
 
 class NewItem extends StatefulWidget {
   const NewItem({super.key});
@@ -13,29 +16,62 @@ class NewItem extends StatefulWidget {
 }
 
 class _NewItemState extends State<NewItem> {
-  //GlobalKey<FormState>, được sử dụng để duy trì trạng thái của Form. Nó cho phép truy cập vào trạng thái của Form từ bất kỳ đâu 
+  //GlobalKey<FormState>, được sử dụng để duy trì trạng thái của Form. Nó cho phép truy cập vào trạng thái của Form từ bất kỳ đâu
   //trong widget tree
   final formKey = GlobalKey<FormState>();
   var enteredNote = '';
   var enteredTenSp = '';
   var enteredSoluongSp = 1;
   Category? selectedLoaiSp;
-
+  //Biến trạng thái "isSending" cho thấy quá trình gửi chưa diễn ra
+  var isSending = false;
 
   //Xử lý nút thêm sản phẩm
-  void buttonAddProduct() {
+  //Khi một hàm được đánh dấu là async, nó tự động trả về một Future
+  //async: Cho biết hàm "buttonAddProduct" sẽ thực hiện các hoạt động bất đồng bộ
+  void buttonAddProduct() async {
     //kiểm tra trạng thái của form thông qua valiedate() các formField
     if (formKey.currentState!.validate()) {
       //Nếu đúng thì lưu lại
       formKey.currentState!.save();
+      //Quản lý trạng thái gửi
+      setState(() {
+        isSending = true;
+      });
+      //Địa chỉ URL mà ta muốn gửi yêu cầu POST đến.
+      final url = Uri.https(
+          'vietfresh-6acc6-default-rtdb.asia-southeast1.firebasedatabase.app',
+          'viet-fresh-user2.json');
+      // await http.post(..) Chờ đợi Future hoàn thành và trả về Response, sau đó mới tiếp tục các dòng lệnh khách
+      //http.post -- Yêu cầu gửi dữ liệu lên firebase
+      final response = await http.post(url,
+          //Định nghĩa loại nội dung bạn đang gửi, thường là application/json
+          headers: {'Content-Type': 'application/json'},
+          // Dữ liệu bạn muốn gửi, được mã hóa dưới dạng JSON.
+          body: json.encode({
+            'name': enteredTenSp,
+            'quantity': enteredSoluongSp,
+            'category': selectedLoaiSp!.name,
+            'note': enteredNote,
+          }));
+
+      //mounted là một thuộc tính của State trong StatefulWidget. Nó trả về true nếu đối tượng State hiện tại vẫn được gắn vào cây
+      //widget (nghĩa là widget vẫn được hiển thị trên màn hình và chưa bị hủy)
+
+      //if (!context.mounted) return; đảm bảo rằng nếu widget không còn tồn tại (ví dụ: người dùng đã rời khỏi màn hình), thì hàm sẽ
+      //kết thúc ngay lập tức và không thực hiện các lệnh tiếp theo, bảo vệ ứng dụng khỏi lỗi liên quan đến việc cố gắng cập nhật một
+      //widget không còn tồn tại.
+      if (!context.mounted) {
+        return;
+      }
+      final Map<String, dynamic> resData = json.decode(response.body);
       //Đóng màn hình thêm sản phẩm sau khi thêm sản phẩm xong
       Navigator.of(context).pop(GroceryItem(
-        id: DateTime.now().toString(),
-        name: enteredTenSp,
-        quantity: enteredSoluongSp,
-        category: selectedLoaiSp!,
-        note: enteredNote,
-      ));
+          id: resData['name'],
+          name: enteredTenSp,
+          quantity: enteredSoluongSp,
+          category: selectedLoaiSp!,
+          note: enteredNote));
     }
   }
 
@@ -249,22 +285,28 @@ class _NewItemState extends State<NewItem> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: buttonClearProduct,
+                    onPressed: isSending ? null : buttonClearProduct,
                     child: const Style(
                       outputText: 'Clear',
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: buttonAddProduct,
+                    onPressed: isSending ? null : buttonAddProduct,
                     style: ButtonStyle(
                       //Thay đổi màu nền của button theo màu theme đã khai báo
                       backgroundColor: MaterialStateProperty.all(
                         Theme.of(context).primaryColorLight,
                       ),
                     ),
-                    child: const Style(
-                      outputText: 'Thêm sản phẩm',
-                    ),
+                    child: isSending
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Style(
+                            outputText: 'Thêm sản phẩm',
+                          ),
                   ),
                 ],
               )
