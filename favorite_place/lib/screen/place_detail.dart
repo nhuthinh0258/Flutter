@@ -12,21 +12,16 @@ class PlaceDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(place.name),
       ),
-      body:Padding(
-          padding: const EdgeInsets.all(16),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  place.name,
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground),
-                ),
-              ],
-            ),
+      body: Stack(
+        children: [
+          Image.file(
+            place.image,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
           ),
-        ),
+        ],
+      ),
     );
   }
 }

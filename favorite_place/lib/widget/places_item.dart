@@ -23,21 +23,35 @@ class PlacesItem extends ConsumerWidget {
         child: InkWell(
           child: Card(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.all(10.0),
               child: ListTile(
+                leading: Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.white,
+                    ),
+                    child: Image.file(listPlace[index].image,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,),
+                  ),
+                
+                
                 title: Text(
                   listPlace[index].name,
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                 ),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
+                    return PlaceDetailScreen(place: listPlace[index]);
+                  }));
+                },
               ),
             ),
           ),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-              return PlaceDetailScreen(place: listPlace[index]);
-            }));
-          },
         ),
       );
     }

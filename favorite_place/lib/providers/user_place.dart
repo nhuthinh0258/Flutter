@@ -1,12 +1,13 @@
 import 'package:favorite_place/model/place.dart';
 import 'package:riverpod/riverpod.dart';
+import 'dart:io';
 
 class UserPlaceNotifier extends StateNotifier<List<Place>>{
   UserPlaceNotifier() : super(const []);
 
   //Hàm xử lý thêm địa điểm
-  void addPlace(String name){
-    final newPlace = Place(name: name);
+  void addPlace(String name,File image){
+    final newPlace = Place(name: name,image: image);
     state = [newPlace,...state];
   }
 

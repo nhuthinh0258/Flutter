@@ -8,7 +8,6 @@ class PlacesScreen extends ConsumerWidget {
   const PlacesScreen({super.key});
 
   @override
-  @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userPlaces = ref.watch(userPlaceProvider);
     
@@ -29,8 +28,11 @@ class PlacesScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: PlacesItem(
-        listPlace: userPlaces,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: PlacesItem(
+          listPlace: userPlaces,
+        ),
       ),
     );
   }

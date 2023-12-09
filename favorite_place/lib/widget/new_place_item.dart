@@ -1,16 +1,29 @@
+import 'package:favorite_place/widget/image_input.dart';
+import 'package:favorite_place/widget/location_input.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:io';
 
 class NewPlaceItem extends StatelessWidget {
   const NewPlaceItem(
-      {super.key,
-      required this.buttonAddPlace,required this.controller});
-
+      {super.key, required this.buttonAddPlace, required this.controller,required this.formKey,required this.onSelectedImage});
 
   final void Function() buttonAddPlace;
   final TextEditingController controller;
+  final GlobalKey<FormState> formKey;
+  final void Function(File image) onSelectedImage;
 
-  
+  String? validatorNameProduct(value) {
+    if (value == null || value.isEmpty) {
+      return 'Tên sản phẩm rỗng';
+    }
+    //Kiểm tra tên sản phẩm sau khi loại bỏ khoảng trắng có chứa ít nhất 3 kí tự
+    else if (value.trim().length < 3) {
+      return 'Tên sản phẩm phải có ít nhất 3 ký tự';
+    }
+    //trả về null nếu không có lỗi
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +31,18 @@ class NewPlaceItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
+          key: formKey,
           child: Column(
             children: [
+              const SizedBox(height: 20,),
+              ImageInput(onSelectedImage: onSelectedImage,),
+              const SizedBox(height: 20,),
+              const LocationInput(),
+              const SizedBox(height: 20,),
               TextFormField(
                 style: GoogleFonts.ubuntuCondensed(
-                  fontWeight: Theme.of(context).textTheme.titleMedium!.fontWeight,
+                  fontWeight:
+                      Theme.of(context).textTheme.titleMedium!.fontWeight,
                   color: Theme.of(context).colorScheme.onBackground,
                   fontSize: 16,
                 ),
@@ -36,6 +56,7 @@ class NewPlaceItem extends StatelessWidget {
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
+                validator: validatorNameProduct,
                 controller: controller,
               ),
               const SizedBox(
@@ -53,7 +74,8 @@ class NewPlaceItem extends StatelessWidget {
                 ),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color.fromARGB(255, 78, 93, 105)), // Màu nền của nút
+                      const Color.fromARGB(
+                          255, 78, 93, 105)), // Màu nền của nút
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
