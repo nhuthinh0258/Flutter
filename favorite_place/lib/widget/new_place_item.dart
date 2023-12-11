@@ -1,3 +1,4 @@
+import 'package:favorite_place/model/locationplace.dart';
 import 'package:favorite_place/widget/image_input.dart';
 import 'package:favorite_place/widget/location_input.dart';
 import 'package:flutter/material.dart';
@@ -6,12 +7,13 @@ import 'dart:io';
 
 class NewPlaceItem extends StatelessWidget {
   const NewPlaceItem(
-      {super.key, required this.buttonAddPlace, required this.controller,required this.formKey,required this.onSelectedImage});
+      {super.key, required this.buttonAddPlace, required this.controller,required this.formKey,required this.onSelectedImage,required this.onSelectedLocation});
 
   final void Function() buttonAddPlace;
   final TextEditingController controller;
   final GlobalKey<FormState> formKey;
   final void Function(File image) onSelectedImage;
+  final void Function(LocationPlace location) onSelectedLocation;
 
   String? validatorNameProduct(value) {
     if (value == null || value.isEmpty) {
@@ -37,7 +39,7 @@ class NewPlaceItem extends StatelessWidget {
               const SizedBox(height: 20,),
               ImageInput(onSelectedImage: onSelectedImage,),
               const SizedBox(height: 20,),
-              const LocationInput(),
+              LocationInput(onSelectedLocation: onSelectedLocation,),
               const SizedBox(height: 20,),
               TextFormField(
                 style: GoogleFonts.ubuntuCondensed(

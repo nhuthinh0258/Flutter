@@ -26,22 +26,27 @@ class PlacesItem extends ConsumerWidget {
               padding: const EdgeInsets.all(10.0),
               child: ListTile(
                 leading: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    child: Image.file(listPlace[index].image,
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                  ),
+                  child: Image.file(
+                    listPlace[index].image,
                     width: double.infinity,
                     height: double.infinity,
-                    fit: BoxFit.cover,),
+                    fit: BoxFit.cover,
                   ),
-                
-                
+                ),
                 title: Text(
                   listPlace[index].name,
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground),
+                ),
+                subtitle: Text(
+                  listPlace[index].location.address,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                 ),
                 onTap: () {

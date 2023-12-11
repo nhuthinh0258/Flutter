@@ -1,11 +1,17 @@
+import 'package:favorite_place/model/locationplace.dart';
 import 'package:uuid/uuid.dart';
 import 'dart:io';
 
 const uuid = Uuid();
 
-class Place{
+class Place {
   final String id;
   final String name;
   final File image;
-  Place({required this.name,required this.image}) : id = uuid.v4();
+  final LocationPlace location;
+  Place({
+    required this.name,
+    required this.image,
+    required this.location,
+  }) : id = uuid.v4();
 }
