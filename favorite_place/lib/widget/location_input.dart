@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:favorite_place/model/locationplace.dart';
+import 'package:favorite_place/screen/map.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({super.key,required this.onSelectedLocation});
+  const LocationInput({super.key, required this.onSelectedLocation});
 
   final void Function(LocationPlace location) onSelectedLocation;
 
@@ -20,10 +22,29 @@ class _LocationInputState extends State<LocationInput> {
   //biến có thể null, lưu trữ thông tin về vị trí đã chọn, bao gồm vĩ độ và kinh độ
   LocationPlace? pickedLocation;
   var isGettingLocation = false;
+
+  void savePlace(double lat, double long) async{
+    final url = Uri.parse(
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$long&key=AIzaSyCqQtAnVK7DJBTaKAm3e2Qsp4R1QN4jkuo');
+    final response = await http.get(url);
+    final resData = json.decode(response.body);
+    final address = resData['results'][0]['formatted_address'];
+    //Cập nhật Trạng thái UI với Vị trí Đã Lấy
+    setState(() {
+      pickedLocation = LocationPlace(
+        address: address,
+        lat: lat,
+        long: long,
+      );
+      isGettingLocation = false;
+    });
+    widget.onSelectedLocation(pickedLocation!);
+  }
+
   //tạo URL cho một bản đồ tĩnh từ Google Static Maps API dựa trên vị trí đã chọn pickedLocation
-  String get locationImage{
+  String get locationImage {
     //Nếu null, nó trả về một chuỗi rỗng, có nghĩa là không có URL bản đồ nào được tạo
-    if(pickedLocation == null){
+    if (pickedLocation == null) {
       return '';
     }
     final lat = pickedLocation!.lat;
@@ -84,6 +105,17 @@ class _LocationInputState extends State<LocationInput> {
     widget.onSelectedLocation(pickedLocation!);
   }
 
+  void onSelectLocation() async {
+    final selectingLocation = await Navigator.of(context)
+        .push<LatLng>(MaterialPageRoute(builder: (ctx) {
+      return const MapScreen();
+    }));
+    if (selectingLocation == null) {
+      return;
+    }
+    savePlace(selectingLocation.latitude, selectingLocation.longitude);
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget content = Text(
@@ -95,8 +127,13 @@ class _LocationInputState extends State<LocationInput> {
           .copyWith(color: Theme.of(context).colorScheme.onBackground),
     );
     //Nếu pickedLocation ko null, nó sẽ hiển thị thay cho text hình ảnh map url
-    if(pickedLocation != null){
-      content = Image.network(locationImage,fit: BoxFit.cover,width: double.infinity,height: double.infinity,);
+    if (pickedLocation != null) {
+      content = Image.network(
+        locationImage,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
     }
     //khi lấy vị trí sẽ được thay thế bằng màn hình vòng tròn tải
     if (isGettingLocation) {
@@ -129,7 +166,7 @@ class _LocationInputState extends State<LocationInput> {
               label: const Text('Địa chỉ hiện tại'),
             ),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: onSelectLocation,
               icon: const Icon(Icons.map),
               label: const Text('Chọn địa chỉ'),
             ),
