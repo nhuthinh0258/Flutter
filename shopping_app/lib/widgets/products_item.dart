@@ -95,7 +95,7 @@ class CategoryItem extends StatelessWidget {
                   //trailing Có thể sử dụng cho biểu tượng hoặc chức năng tương tác như một nút
                   trailing: IconButton(
                     onPressed: () {
-                      onUpdateItem(listGroceryItem[index]);
+                      // onUpdateItem(listGroceryItem[index]);
                     },
                     icon: const Icon(Icons.edit),
                     color: Colors.black,

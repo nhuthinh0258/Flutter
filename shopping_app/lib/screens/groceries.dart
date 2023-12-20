@@ -1,24 +1,25 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shopping_app/data/categories.dart';
+import 'package:shopping_app/models/category.dart';
 import 'package:shopping_app/models/grocery_item.dart';
+import 'package:shopping_app/provider/load_category.dart';
 import 'package:shopping_app/screens/item_detail.dart';
 import 'package:shopping_app/screens/new_item.dart';
-import 'package:shopping_app/screens/update_item.dart';
-import 'package:shopping_app/widgets/category_item.dart';
+import 'package:shopping_app/widgets/products_item.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Groceries extends StatefulWidget {
+class Groceries extends ConsumerStatefulWidget {
   const Groceries({super.key});
 
   @override
-  State<Groceries> createState() {
+  ConsumerState<Groceries> createState() {
     return _GroceriesState();
   }
 }
 
-class _GroceriesState extends State<Groceries> {
+class _GroceriesState extends ConsumerState<Groceries> {
   List<GroceryItem> listGroceryItem = [];
   //Biến trạng thái "isLoading" cho thấy quá trình tải đang diễn ra
   var isLoading = true;
@@ -32,46 +33,53 @@ class _GroceriesState extends State<Groceries> {
 
   //Hàm hiển thị, cập nhật danh sách sản phẩm từ firebase
   void loadItem() async {
+    final categories = await ref.read(loadCategoryProvider.notifier).loadCategory();
     final url = Uri.https(
         'vietfresh-6acc6-default-rtdb.asia-southeast1.firebasedatabase.app',
-        'viet-fresh-user2.json');
-    try{
+        'viet-fresh-user2/products.json');
+    try {
       //http.get() -- yêu cầu lấy giữ liệu từ firebase
-    final response = await http.get(url);
-    //Trường hợp nếu như không có dữ liệu nào ở trong firebase, đặt trạng thái isLoading = false để hiển thị màn hình "ko có sản phẩm"
-    if (response.body == 'null') {
+      final response = await http.get(url);
+      //Trường hợp bị lỗi từ server, đặt trạng thái isLoading = false để hiển thị màn hình "CircularProgressIndicator()"
+      if (response.body == 'null') {
+        setState(() {
+          isLoading = false;
+        });
+        //Lệnh return dùng để kết thúc hàm nhằm chặn thực thi các dòng code tiếp theo trong hàm
+        return;
+      }
+      final Map<String, dynamic> listData = json.decode(response.body);
+      //khởi tạo danh sách trống
+      final List<GroceryItem> loadedProduct = [];
+      //Duyệt từng bản ghi trong listData server
+      for (final item in listData.entries) {
+        //Tìm kiếm category của bản ghi tương ứng category của data
+        final category = categories.firstWhere(
+          (itemcat) => itemcat.id == item.value['category'],
+          orElse: () => const Category(
+              id: 'default', name: 'Không xác định', color: Colors.grey),
+        );
+
+        //Thêm sản phẩm vào danh sách
+        loadedProduct.add(
+          GroceryItem(
+            id: item.key,
+            name: item.value['name'],
+            quantity: item.value['quantity'],
+            note: item.value['note'],
+            category: category,
+          ),
+        );
+      }
       setState(() {
+        listGroceryItem = loadedProduct;
         isLoading = false;
       });
-      //Lệnh return dùng để kết thúc hàm nhằm chặn thực thi các dòng code tiếp theo trong hàm
-      return;
-    }
-    final Map<String, dynamic> listData = json.decode(response.body);
-    final List<GroceryItem> loadedProduct = [];
-    for (final item in listData.entries) {
-      final category = categories.entries.firstWhere((itemcat) {
-        return itemcat.value.name == item.value['category'];
-      }).value;
-      loadedProduct.add(
-        GroceryItem(
-          id: item.key,
-          name: item.value['name'],
-          quantity: item.value['quantity'],
-          note: item.value['note'],
-          category: category,
-        ),
-      );
-    }
-    setState(() {
-      listGroceryItem = loadedProduct;
-      isLoading = false;
-    });
-    }catch (e){
+    } catch (e) {
       setState(() {
         error = 'Đã xảy ra lỗi, vui lòng thử lại';
       });
     }
-    
   }
 
   //Hàm addItem để chuyển tới layout "thêm sản phẩm"
@@ -101,7 +109,7 @@ class _GroceriesState extends State<Groceries> {
 
     final url = Uri.https(
         'vietfresh-6acc6-default-rtdb.asia-southeast1.firebasedatabase.app',
-        '/viet-fresh-user2/${product.id}.json');
+        '/viet-fresh-user2/products/${product.id}.json');
     final response = await http.put(url,
         body: json.encode({
           'name': product.name,
@@ -123,8 +131,9 @@ class _GroceriesState extends State<Groceries> {
     //Đường dẫn đến sản phẩm cụ thể gần xóa
     final url = Uri.https(
         'vietfresh-6acc6-default-rtdb.asia-southeast1.firebasedatabase.app',
-        'viet-fresh-user2/${product.id}.json');
+        'viet-fresh-user2/products/${product.id}.json');
     //biến response sẽ được gán sau khi hoàn thành yêu cầu xóa
+    //http.delete - yêu cầu xóa
     final response = await http.delete(url);
 
     //Nếu trạng thái response hợp lệ
@@ -179,29 +188,29 @@ class _GroceriesState extends State<Groceries> {
     );
   }
 
-  void onUpdateItem(GroceryItem product) async {
-    final updateItem = await Navigator.of(context).push<GroceryItem>(
-      MaterialPageRoute(builder: (ctx) {
-        return UpdateItem(
-          product: product,
-        );
-      }),
-    );
-    if (updateItem != null) {
-      setState(() {
-        //Phương thức .indexWhere() là một phương thức của List, được sử dụng để tìm chỉ số (index) của phần tử đầu tiên trong danh
-        //sách thỏa mãn một điều kiện nhất định
-        final indexItem = listGroceryItem.indexWhere((index) {
-          return index.id == updateItem.id;
-        });
-        //giá trị -1 thường được sử dụng để biểu thị rằng một tìm kiếm hoặc truy vấn không tìm thấy kết quả hợp lệ.
-        //nếu tìm thấy phần tử trong danh sách (nghĩa là indexItem không phải là -1), thì thực hiện các hành động tiếp theo
-        if (indexItem != -1) {
-          listGroceryItem[indexItem] = updateItem;
-        }
-      });
-    }
-  }
+  // void onUpdateItem(GroceryItem product) async {
+  //   final updateItem = await Navigator.of(context).push<GroceryItem>(
+  //     MaterialPageRoute(builder: (ctx) {
+  //       return UpdateItem(
+  //         product: product,
+  //       );
+  //     }),
+  //   );
+  //   if (updateItem != null) {
+  //     setState(() {
+  //       //Phương thức .indexWhere() là một phương thức của List, được sử dụng để tìm chỉ số (index) của phần tử đầu tiên trong danh
+  //       //sách thỏa mãn một điều kiện nhất định
+  //       final indexItem = listGroceryItem.indexWhere((index) {
+  //         return index.id == updateItem.id;
+  //       });
+  //       //giá trị -1 thường được sử dụng để biểu thị rằng một tìm kiếm hoặc truy vấn không tìm thấy kết quả hợp lệ.
+  //       //nếu tìm thấy phần tử trong danh sách (nghĩa là indexItem không phải là -1), thì thực hiện các hành động tiếp theo
+  //       if (indexItem != -1) {
+  //         listGroceryItem[indexItem] = updateItem;
+  //       }
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -217,7 +226,7 @@ class _GroceriesState extends State<Groceries> {
         ],
       ),
       body: CategoryItem(
-        onUpdateItem: onUpdateItem,
+        onUpdateItem: (item) {},
         onRemoveItem: onRemoveItem,
         onSelectedItem: onSelectedProduct,
         listGroceryItem: listGroceryItem,

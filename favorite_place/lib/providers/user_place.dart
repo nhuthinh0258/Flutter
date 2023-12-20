@@ -1,6 +1,6 @@
 import 'package:favorite_place/model/locationplace.dart';
 import 'package:favorite_place/model/place.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 
 class UserPlaceNotifier extends StateNotifier<List<Place>>{

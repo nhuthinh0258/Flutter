@@ -40,12 +40,14 @@ class MealScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Hiện không có món nào!',
+            
+            'Hiện không có sản phẩm nào!',
             style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                 color: Theme.of(context)
                     .colorScheme
                     .onBackground
                     .withOpacity(0.75)),
+                    textAlign: TextAlign.center,
           ),
           const SizedBox(
             height: 16,

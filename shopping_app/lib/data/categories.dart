@@ -1,31 +1,33 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:shopping_app/models/category.dart';
 
-const categories = {
-  'C1': Category(
-    id: 'C1',
-    name: 'Rau',
-    color: Color.fromARGB(255, 0, 255, 128),
-  ),
-  'C2': Category(
-    id: 'C2',
-    name: 'Trái cây',
-    color: Color.fromARGB(255, 145, 255, 0),
-  ),
-    'C3': Category(
-    id: 'C3',
-    name: 'Củ',
-    color: Color.fromARGB(255, 6, 12, 9),
-  ),
-    'C4': Category(
-    id: 'C4',
-    name: 'Hoa',
-    color: Color.fromARGB(255, 2, 169, 86),
-  ),
-    'C5': Category(
-    id: 'C5',
-    name: 'Củ',
-    color: Color.fromARGB(255, 23, 59, 41),
-  ),
-};
+// const categories = {
+//   'C1': Category(
+//     id: 'C1',
+//     name: 'Rau',
+//     color: Color(0xff443a49),
+//   ),
+//   'C2': Category(
+//     id: 'C2',
+//     name: 'Trái cây',
+//     color: Color(0xff443a49),
+//   ),
+//     'C3': Category(
+//     id: 'C3',
+//     name: 'Thịt',
+//     color: Color(0xff443a49),
+//   ),
+//     'C4': Category(
+//     id: 'C4',
+//     name: 'Hoa',
+//     color: Color(0xff443a49),
+//   ),
+//     'C5': Category(
+//     id: 'C5',
+//     name: 'Đồ khô',
+//     color: Color(0xff443a49),
+//   ),
+// };
+
+

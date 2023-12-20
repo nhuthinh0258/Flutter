@@ -1,27 +1,28 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:shopping_app/data/categories.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/models/category.dart';
 import 'package:shopping_app/models/grocery_item.dart';
+import 'package:shopping_app/provider/load_category.dart';
 import 'package:shopping_app/style.dart';
 import 'package:http/http.dart' as http;
 
-class NewItem extends StatefulWidget {
+class NewItem extends ConsumerStatefulWidget {
   const NewItem({super.key});
   @override
-  State<NewItem> createState() {
+  ConsumerState<NewItem> createState() {
     return _NewItemState();
   }
 }
 
-class _NewItemState extends State<NewItem> {
+class _NewItemState extends ConsumerState<NewItem> {
   //GlobalKey<FormState>, được sử dụng để duy trì trạng thái của Form. Nó cho phép truy cập vào trạng thái của Form từ bất kỳ đâu
   //trong widget tree
   final formKey = GlobalKey<FormState>();
-  var enteredNote = '';
-  var enteredTenSp = '';
-  var enteredSoluongSp = 1;
+  String? enteredNote = '';
+  String enteredTenSp = '';
+  int enteredSoluongSp = 1;
   Category? selectedLoaiSp;
   //Biến trạng thái "isSending" cho thấy quá trình gửi chưa diễn ra
   var isSending = false;
@@ -41,7 +42,7 @@ class _NewItemState extends State<NewItem> {
       //Địa chỉ URL mà ta muốn gửi yêu cầu POST đến.
       final url = Uri.https(
           'vietfresh-6acc6-default-rtdb.asia-southeast1.firebasedatabase.app',
-          'viet-fresh-user2.json');
+          'viet-fresh-user2/products.json');
       // await http.post(..) Chờ đợi Future hoàn thành và trả về Response, sau đó mới tiếp tục các dòng lệnh khách
       //http.post -- Yêu cầu gửi dữ liệu lên firebase
       final response = await http.post(url,
@@ -51,7 +52,7 @@ class _NewItemState extends State<NewItem> {
           body: json.encode({
             'name': enteredTenSp,
             'quantity': enteredSoluongSp,
-            'category': selectedLoaiSp!.name,
+            'category': selectedLoaiSp!.id,
             'note': enteredNote,
           }));
 
@@ -122,6 +123,7 @@ class _NewItemState extends State<NewItem> {
 
   @override
   Widget build(BuildContext context) {
+    final categories = ref.watch(loadCategoryProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Thêm sản phẩm mới'),
@@ -204,47 +206,24 @@ class _NewItemState extends State<NewItem> {
                             style: TextStyle(fontSize: 20),
                           ),
                         ),
-                        items: [
-                          //Cách 1:
-                          // for (final category in categories.entries)
-                          //   DropdownMenuItem(
-                          //       value: category.value,
-                          //       child: Row(
-                          //         children: [
-                          //           Container(
-                          //             width: 16,
-                          //             height: 16,
-                          //             color: category.value.color,
-                          //           ),
-                          //           const SizedBox(
-                          //             width: 6,
-                          //           ),
-                          //           Style(outputText: category.value.name),
-                          //         ],
-                          //       ),
-                          //     );
-                          //Cách 2:
-                          ...categories.entries.map(
-                            (category) {
-                              return DropdownMenuItem(
-                                value: category.value,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 16,
-                                      height: 16,
-                                      color: category.value.color,
-                                    ),
-                                    const SizedBox(
-                                      width: 6,
-                                    ),
-                                    Style(outputText: category.value.name),
-                                  ],
+                        items: categories.map((category) {
+                          return DropdownMenuItem(
+                            value: category,
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 16,
+                                  height: 16,
+                                  color: category.color,
                                 ),
-                              );
-                            },
-                          ).toList()
-                        ],
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                Style(outputText: category.name)
+                              ],
+                            ),
+                          );
+                        }).toList(),
                         onChanged: (value) {
                           setState(() {
                             selectedLoaiSp = value!;
@@ -275,7 +254,7 @@ class _NewItemState extends State<NewItem> {
                 //Số dòng tối đa
                 maxLines: 5,
                 onSaved: (value) {
-                  enteredNote = value!;
+                  enteredNote = value;
                 },
               ),
               const SizedBox(

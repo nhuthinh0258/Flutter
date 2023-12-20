@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import  'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shopping_app/screens/groceries.dart';
+import 'package:shopping_app/screens/tabs.dart';
+import 'package:shopping_app/screens/user.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child:MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +27,7 @@ class MyApp extends StatelessWidget {
         primaryColorLight: const Color.fromARGB(255, 230, 228, 193),
         primaryColorDark: const Color.fromARGB(255, 161, 161, 147)
       ),
-      home: const Groceries(),
+      home:const TabsScreen(),
     );
   }
 }
