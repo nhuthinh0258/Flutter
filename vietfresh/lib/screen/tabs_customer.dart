@@ -24,6 +24,13 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     const CustomerDetail(),
   ];
 
+  final List<String> pageTitles = [
+    "Trang Chủ",
+    "Đơn Hàng",
+    "Hỗ Trợ",
+    "Tài Khoản",
+  ];
+
   void selectedPage(int index) {
     setState(() {
       selectedPageIndex = index;
@@ -34,6 +41,15 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   Widget build(BuildContext context) {
     final isKeyboardVisible = ref.watch(bottomNavigationProvider);
     return Scaffold(
+        appBar: AppBar(
+          title: Text(pageTitles[selectedPageIndex]),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.shopping_cart),
+            ),
+          ],
+        ),
         body: pages[selectedPageIndex],
         bottomNavigationBar: selectedPageIndex == 2
             ? isKeyboardVisible
@@ -42,13 +58,29 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                     currentIndex: selectedPageIndex,
                     items: const [
                       BottomNavigationBarItem(
-                          icon: Icon(Icons.store,color: Colors.white,), label: 'Trang chủ'),
+                          icon: Icon(
+                            Icons.home,
+                            color: Colors.white,
+                          ),
+                          label: 'Trang chủ'),
                       BottomNavigationBarItem(
-                          icon: Icon(Icons.receipt,color: Colors.white,), label: 'Đơn hàng'),
+                          icon: Icon(
+                            Icons.receipt,
+                            color: Colors.white,
+                          ),
+                          label: 'Đơn hàng'),
                       BottomNavigationBarItem(
-                          icon: Icon(Icons.chat,color: Colors.white,), label: 'Hỗ trợ'),
+                          icon: Icon(
+                            Icons.chat,
+                            color: Colors.white,
+                          ),
+                          label: 'Hỗ trợ'),
                       BottomNavigationBarItem(
-                          icon: Icon(Icons.account_circle,color: Colors.white,), label: 'Tôi'),
+                          icon: Icon(
+                            Icons.account_circle,
+                            color: Colors.white,
+                          ),
+                          label: 'Tôi'),
                     ],
                     selectedItemColor: Colors.yellow,
                   )
@@ -58,13 +90,29 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                 currentIndex: selectedPageIndex,
                 items: const [
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.store,color: Colors.white,), label: 'Trang chủ'),
+                      icon: Icon(
+                        Icons.home,
+                        color: Colors.white,
+                      ),
+                      label: 'Trang chủ'),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.receipt,color: Colors.white,), label: 'Đơn hàng'),
+                      icon: Icon(
+                        Icons.receipt,
+                        color: Colors.white,
+                      ),
+                      label: 'Đơn hàng'),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.chat,color: Colors.white,), label: 'hỗ trợ'),
+                      icon: Icon(
+                        Icons.chat,
+                        color: Colors.white,
+                      ),
+                      label: 'hỗ trợ'),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.account_circle,color: Colors.white,), label: 'Tôi'),
+                      icon: Icon(
+                        Icons.account_circle,
+                        color: Colors.white,
+                      ),
+                      label: 'Tôi'),
                 ],
                 selectedItemColor: Colors.yellow,
               ));

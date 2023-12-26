@@ -9,9 +9,9 @@ class UserNotifier extends StateNotifier<UserState> {
     user();
   }
 
-  void user(){
+  void user() {
     //Lắng nghe sự thay đổi trạng thái đăng nhập của người dùng
-    firebase.authStateChanges().listen((user)async {
+    firebase.authStateChanges().listen((user) async {
       //Kiểm tra nếu không có thông tin người dùng (người dùng đăng xuất)
       if (user == null) {
         //Kết thúc hàm nếu không có người dùng đăng nhập
@@ -20,8 +20,11 @@ class UserNotifier extends StateNotifier<UserState> {
       //lấy dữ liệu từ Firestore thông qua get()
       final userData = await firestore.collection('users').doc(user.uid).get();
       final userName = userData.data()!['username'];
+
       //Cập nhật trạng thái với email của người dùng nếu họ đăng nhập
-      state = UserState(userName: userName);
+      state = UserState(
+        userName: userName,
+      );
     });
   }
 }

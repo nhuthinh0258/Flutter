@@ -1,6 +1,8 @@
 import 'package:chat_app/provider/customer_provider.dart';
 import 'package:chat_app/screen/auth.dart';
 import 'package:chat_app/screen/products.dart';
+import 'package:chat_app/screen/tabs_vendor.dart';
+import 'package:chat_app/screen/vendor_information.dart';
 import 'package:chat_app/screen/verify_email.dart';
 import 'package:chat_app/style.dart';
 import 'package:chat_app/widgets/user_image.dart';
@@ -10,13 +12,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class CustomerDetail extends ConsumerWidget {
   const CustomerDetail({super.key});
 
+  Future<bool> checkVendorInfoEntered() async {
+    final user = firebase.currentUser!;
+
+    // Lấy thông tin cửa hàng từ Firestore
+    final vendorInfo = await firestore.collection('vendor').where('user_id', isEqualTo: user.uid).get();
+    return vendorInfo.docs.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userName = ref.watch(userProvider).userName;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tài khoản'),
-      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -62,7 +69,7 @@ class CustomerDetail extends ConsumerWidget {
                             color: Color.fromARGB(255, 77, 71, 71),
                           ),
                           title: const Style(outputText: 'Đăng ký bán hàng'),
-                          onTap: () {
+                          onTap: () async {
                             final user = firebase.currentUser!;
                             if (!user.emailVerified) {
                               Navigator.of(context)
@@ -70,10 +77,23 @@ class CustomerDetail extends ConsumerWidget {
                                 return const VerifyEmail();
                               }));
                             } else {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (ctx) {
-                                return const Product();
-                              }));
+                              bool hasEnteredVendorInfo =
+                                  await checkVendorInfoEntered();
+                              if (hasEnteredVendorInfo) {
+                                // Nếu thông tin cửa hàng đã được nhập, chuyển đến màn hình sản phẩm
+                                if (!context.mounted) return;
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (ctx) {
+                                  return const TabsVendor();
+                                }));
+                              } else {
+                                // Nếu thông tin cửa hàng chưa được nhập, chuyển đến màn hình nhập thông tin cửa hàng
+                                if (!context.mounted) return;
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (ctx) {
+                                  return const VendorInfor();
+                                }));
+                              }
                             }
                           },
                         ),
@@ -86,17 +106,6 @@ class CustomerDetail extends ConsumerWidget {
                             color: Color.fromARGB(255, 77, 71, 71),
                           ),
                           title: const Style(outputText: 'Cài đặt'),
-                          onTap: () {},
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: ListTile(
-                          leading: const Icon(
-                            Icons.bar_chart,
-                            color: Color.fromARGB(255, 77, 71, 71),
-                          ),
-                          title: const Style(outputText: 'Thống kê'),
                           onTap: () {},
                         ),
                       ),

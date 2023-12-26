@@ -10,14 +10,13 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('demo'),
-      ),
       body: Column(
-        children:const [
+        children: const [
           Expanded(child: ChatMessage()),
           NewMessage(),
-          SizedBox(height: 12,),
+          SizedBox(
+            height: 12,
+          ),
         ],
       ),
     );

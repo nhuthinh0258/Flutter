@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:chat_app/screen/auth.dart';
 import 'package:chat_app/screen/products.dart';
 import 'package:chat_app/screen/tabs_vendor.dart';
+import 'package:chat_app/screen/vendor_information.dart';
 import 'package:chat_app/style.dart';
 import 'package:flutter/material.dart';
 
@@ -39,9 +40,12 @@ class _VerifyEmailState extends State<VerifyEmail> {
 
   void checkEmailVerify() async {
     await firebase.currentUser!.reload();
-    setState(() {
-      isEmailVerified = firebase.currentUser!.emailVerified;
-    });
+    if (mounted) {
+      setState(() {
+        isEmailVerified = firebase.currentUser!.emailVerified;
+      });
+    }
+
     if (isEmailVerified) {
       timer?.cancel();
     }
@@ -59,15 +63,17 @@ class _VerifyEmailState extends State<VerifyEmail> {
       isResend = false;
     });
     await Future.delayed(const Duration(minutes: 1));
-    setState(() {
-      isResend = true;
-    });
+    if (mounted) {
+      setState(() {
+        isResend = true;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return isEmailVerified
-        ? const TabsVendor()
+        ? const VendorInfor()
         : Scaffold(
             appBar: AppBar(
               title: const Text('Xác thực email'),

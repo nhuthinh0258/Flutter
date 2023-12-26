@@ -1,25 +1,25 @@
+import 'package:chat_app/screen/auth.dart';
+import 'package:chat_app/screen/new_product.dart';
+import 'package:chat_app/style.dart';
+import 'package:chat_app/widgets/product_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:chat_app/screen/auth.dart';
-import 'package:chat_app/style.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
+class UpdateProduct extends StatefulWidget {
+  const UpdateProduct(
+      {super.key, required this.product, required this.currentImageUrl});
+  final Map<String, dynamic> product;
+  final String currentImageUrl;
 
-import '../widgets/product_image.dart';
-
-final firebaseStorage = FirebaseStorage.instance;
-
-class NewProduct extends StatefulWidget {
-  const NewProduct({super.key});
-  // final Map<String, dynamic> product;
   @override
-  State<NewProduct> createState() {
-    return _NewProductState();
+  State<StatefulWidget> createState() {
+    return _UpdateProduct();
   }
 }
 
-class _NewProductState extends State<NewProduct> {
+class _UpdateProduct extends State<UpdateProduct> {
+  final formKeyUpdateProduct = GlobalKey<FormState>();
   final formkeyProduct = GlobalKey<FormState>();
   var enteredNameProduct = '';
   var enteredKiloProduct = 100;
@@ -30,33 +30,54 @@ class _NewProductState extends State<NewProduct> {
   var selectedOriginId = 'origin-1703218547035';
   File? selectedImage;
   var isSending = false;
-  var isLoading = true;
 
-  void submitProduct() async {
+  @override
+  void initState() {
+    super.initState();
+    enteredNameProduct = widget.product['name'];
+    enteredKiloProduct = widget.product['kilo'];
+    enteredQuantityProduct = widget.product['quantity'];
+    enteredNoteproduct = widget.product['note'];
+    enteredPriceProduct = widget.product['price'];
+    selectedCategoryId = widget.product['category'];
+    selectedOriginId = widget.product['origin'];
+  }
+
+  void updateProduct() async {
     if (formkeyProduct.currentState!.validate()) {
-      if (selectedImage == null) {
-        return;
-      }
       formkeyProduct.currentState!.save();
 
       setState(() {
         isSending = true;
       });
+      //Lưu ảnh hiện tại vào imageUrl
+      String imageUrl = widget.currentImageUrl;
 
+      //Nếu việc thay ảnh là đúng
+      if (selectedImage != null) {
+        //Lưu ảnh cũ vào biến oldImageUrl
+        String oldImageUrl = imageUrl;
+        //Tạo id ảnh sản phẩm mới
+        final productImage =
+            'product-${DateTime.now().millisecondsSinceEpoch}.jpg';
+        //Lưu ảnh vào product_image trong firestorage
+        final storageRef =
+            firebaseStorage.ref().child('product_image').child(productImage);
+        //Đợi lưu ảnh
+        await storageRef.putFile(selectedImage!);
+        //Đợi lấy url của ảnh sau khi lưu
+        imageUrl = await storageRef.getDownloadURL();
+        //Nếu ảnh cũ khác với ảnh mới
+        if (oldImageUrl != imageUrl) {
+          //Xóa ảnh cũ
+          firebaseStorage.refFromURL(oldImageUrl).delete();
+        }
+      }
       final user = firebase.currentUser!;
-      final productImage =
-          'product-${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final productId = 'product-${DateTime.now().millisecondsSinceEpoch}';
-      final storageRef =
-          firebaseStorage.ref().child('product_image').child(productImage);
-      await storageRef.putFile(selectedImage!);
-      final imageUrl = await storageRef.getDownloadURL();
-
-      await firestore.collection('product').doc(productId).set({
-        'product_id': productId,
-        'user': user.uid,
-        'vendor_id':user.uid,
+      final productId = widget.product['product_id'];
+      await firestore.collection('product').doc(productId).update({
         'image': imageUrl,
+        'vendor_id':user.uid,
         'name': enteredNameProduct,
         'kilo': enteredKiloProduct,
         'quantity': enteredQuantityProduct,
@@ -64,7 +85,7 @@ class _NewProductState extends State<NewProduct> {
         'category': selectedCategoryId,
         'origin': selectedOriginId,
         'note': enteredNoteproduct,
-        'created_at': Timestamp.now(),
+        'update_at': Timestamp.now(),
         'sort_timestamp':Timestamp.now(),
       });
       if (!context.mounted) return;
@@ -75,7 +96,6 @@ class _NewProductState extends State<NewProduct> {
   void onSelectedProductImage(File image) {
     selectedImage = image;
   }
-
 
   String? validatorEnteredNameCategory(String? value) {
     if (value == null || value.isEmpty || value.trim().length < 3) {
@@ -151,12 +171,13 @@ class _NewProductState extends State<NewProduct> {
               children: [
                 ProductImage(
                   onSelectedProductImage: onSelectedProductImage,
-                  initialImageUrl: null,
+                  initialImageUrl: widget.product['image'],
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 TextFormField(
+                  initialValue: enteredNameProduct,
                   decoration: const InputDecoration(
                     errorStyle: TextStyle(color: Colors.red),
                     border: OutlineInputBorder(),
@@ -178,7 +199,7 @@ class _NewProductState extends State<NewProduct> {
                   height: 20,
                 ),
                 TextFormField(
-                  initialValue: '100',
+                  initialValue: enteredKiloProduct.toString(),
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     errorStyle: TextStyle(color: Colors.red),
@@ -194,7 +215,7 @@ class _NewProductState extends State<NewProduct> {
                   ),
                   validator: validatorKiloProduct,
                   onSaved: (value) {
-                    enteredKiloProduct = int.parse(value!) ;
+                    enteredKiloProduct = int.parse(value!);
                   },
                 ),
                 const SizedBox(
@@ -209,7 +230,7 @@ class _NewProductState extends State<NewProduct> {
                           fontSize: 16,
                           color: Colors.black,
                         ),
-                        initialValue: '1',
+                        initialValue: enteredQuantityProduct.toString(),
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           //style lại thông báo lỗi của validator
@@ -237,7 +258,7 @@ class _NewProductState extends State<NewProduct> {
                           fontSize: 16,
                           color: Colors.black,
                         ),
-                        initialValue: '1000',
+                        initialValue: enteredPriceProduct.toString(),
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           //style lại thông báo lỗi của validator
@@ -273,6 +294,11 @@ class _NewProductState extends State<NewProduct> {
                         child: FutureBuilder(
                           future: firestore.collection('orgin').get(),
                           builder: (context, oriSnapshot) {
+                            // if (oriSnapshot.connectionState ==
+                            //     ConnectionState.waiting) {
+                            //   return const Center(child: CircularProgressIndicator(),);
+                            // }
+
                             if (!oriSnapshot.hasData ||
                                 oriSnapshot.data!.docs.isEmpty) {
                               return const Text('Không có dữ liệu');
@@ -375,6 +401,7 @@ class _NewProductState extends State<NewProduct> {
                   height: 20,
                 ),
                 TextFormField(
+                  initialValue: enteredNoteproduct,
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -401,7 +428,7 @@ class _NewProductState extends State<NewProduct> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: submitProduct,
+                      onPressed: updateProduct,
                       style: ButtonStyle(
                         //Thay đổi màu nền của button theo màu theme đã khai báo
                         backgroundColor: MaterialStateProperty.all(
@@ -415,7 +442,7 @@ class _NewProductState extends State<NewProduct> {
                               child: Center(child: CircularProgressIndicator()),
                             )
                           : const Style(
-                              outputText: 'Thêm sản phẩm',
+                              outputText: 'Sửa sản phẩm',
                             ),
                     ),
                   ],

@@ -1,23 +1,15 @@
 import 'package:chat_app/screen/carousel_banner.dart';
 import 'package:chat_app/widgets/category_grid_item.dart';
+import 'package:chat_app/widgets/list_product_home.dart';
+import 'package:chat_app/widgets/product_grid_item.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
   @override
   Widget build(BuildContext context) {
-    List<String> products = [
-      "Product 1",
-      "Product 2",
-      "Product 3",
-      "Product 4"
-    ]; // Replace with your product data
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -31,17 +23,59 @@ class HomePage extends StatelessWidget {
             ),
             // 2. Categories Selection
             const CategoryGridItem(),
-
-            // 3. List of All Products
-            ListView.builder(
-              physics:
-                  const NeverScrollableScrollPhysics(), // to disable ListView's scrolling
-              shrinkWrap: true, // Use this to fit ListView into Column
-              itemCount: products.length,
-              itemBuilder: (ctx, i) => ListTile(
-                title: Text(products[i]),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 14),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Sản phẩm mới',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Xem thêm >',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
               ),
             ),
+            const ProductGridItem(),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 14),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Hot',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text(
+                      'Xem thêm >',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // 3. List of All Products
+            const ListProductHome(),
           ],
         ),
       ),

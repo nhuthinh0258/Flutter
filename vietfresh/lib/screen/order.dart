@@ -5,10 +5,12 @@ class Order extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Giữ chỗ',
-        style: TextStyle(color: Colors.black),
+    return const Scaffold(
+      body: Center(
+        child: Text(
+          'Giữ chỗ',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
     );
   }

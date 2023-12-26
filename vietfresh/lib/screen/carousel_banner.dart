@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/screen/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -58,9 +59,8 @@ class _CarouselBannerState extends State<CarouselBanner> {
                 decoration: const BoxDecoration(
                   color: Colors.amber,
                 ),
-                child: Image.network(
-                  item[
-                      'image'], // Assuming 'image' field contains the URL to the image
+                child: CachedNetworkImage(
+                  imageUrl:item['image'],
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,

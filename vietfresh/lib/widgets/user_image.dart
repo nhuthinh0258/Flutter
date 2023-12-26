@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/screen/auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class UserImage extends StatefulWidget {
 class _UserImage extends State<UserImage> {
   File? pickerImage;
   bool isLoadingImage = false;
+  late ImageProvider<Object> imageProvider;
 
   //Hàm tải ảnh lên firestorage
   void imageUpload(File image) async {
@@ -64,23 +66,41 @@ class _UserImage extends State<UserImage> {
     return StreamBuilder(
       stream: firestore.collection('users').doc(user.uid).snapshots(),
       builder: ((ctx, userSnapshot) {
-        if (userSnapshot.connectionState == ConnectionState.waiting || isLoadingImage) {
-          return  const Center(child:  CircularProgressIndicator());
+        if (userSnapshot.connectionState == ConnectionState.waiting ||
+            isLoadingImage) {
+          return const Center(
+              child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: 32,
+              horizontal: 30,
+            ),
+            child: CircularProgressIndicator(),
+          ));
         }
         if (!userSnapshot.hasData || userSnapshot.data!.data() == null) {
-          return const Text('Không có dữ liệu');
+          return GestureDetector(
+            onTap: onPickImage,
+            child: const CircleAvatar(
+              radius: 50,
+              backgroundColor: Colors.grey,
+              child: Icon(Icons.camera_alt, size: 25), // Placeholder icon
+            ),
+          );
         }
         final userData = userSnapshot.data!.data();
         final imageUser = userData?['image']; // Sử dụng toán tử an toàn
 
-        return CircleAvatar(
-          radius: 50,
-          backgroundColor: Colors.grey,
-          
-          backgroundImage: imageUser != null ? NetworkImage(imageUser) : null,
-          child: GestureDetector(
-            onTap: onPickImage,
-            child: imageUser == null ? const Icon(Icons.camera, size: 25) : null,
+        if (imageUser != null) {
+          imageProvider = CachedNetworkImageProvider(imageUser);
+        } else {
+          imageProvider = const AssetImage('assets/images/VietFresh.png');
+        }
+        return GestureDetector(
+          onTap: onPickImage,
+          child: CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.grey,
+            backgroundImage: imageProvider,
           ),
         );
       }),
