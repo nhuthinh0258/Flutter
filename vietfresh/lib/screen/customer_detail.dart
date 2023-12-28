@@ -1,6 +1,5 @@
 import 'package:chat_app/provider/customer_provider.dart';
 import 'package:chat_app/screen/auth.dart';
-import 'package:chat_app/screen/products.dart';
 import 'package:chat_app/screen/tabs_vendor.dart';
 import 'package:chat_app/screen/vendor_information.dart';
 import 'package:chat_app/screen/verify_email.dart';
@@ -16,8 +15,25 @@ class CustomerDetail extends ConsumerWidget {
     final user = firebase.currentUser!;
 
     // Lấy thông tin cửa hàng từ Firestore
-    final vendorInfo = await firestore.collection('vendor').where('user_id', isEqualTo: user.uid).get();
+    final vendorInfo = await firestore
+        .collection('vendor')
+        .where('user_id', isEqualTo: user.uid)
+        .get();
     return vendorInfo.docs.isNotEmpty;
+  }
+
+  void ensureLoggedIn(BuildContext context, Function action) {
+    if (firebase.currentUser == null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return const AuthScreen();
+          },
+        ),
+      );
+    } else {
+      action();
+    }
   }
 
   @override
@@ -31,7 +47,7 @@ class CustomerDetail extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: 40,
-                  horizontal: 30,
+                  horizontal: 16,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,86 +66,83 @@ class CustomerDetail extends ConsumerWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: ListTile(
-                          leading: const Icon(
-                            Icons.account_circle,
-                            color: Color.fromARGB(255, 77, 71, 71),
-                          ),
-                          title: const Style(outputText: 'Chi tiết tài khoản'),
-                          onTap: () {},
+                      ListTile(
+                        leading: const Icon(
+                          Icons.account_circle,
+                          color: Color.fromARGB(255, 77, 71, 71),
                         ),
+                        title: const Style(outputText: 'Chi tiết tài khoản'),
+                        onTap: () {},
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: ListTile(
-                          leading: const Icon(
-                            Icons.sell,
-                            color: Color.fromARGB(255, 77, 71, 71),
-                          ),
-                          title: const Style(outputText: 'Đăng ký bán hàng'),
-                          onTap: () async {
-                            final user = firebase.currentUser!;
-                            if (!user.emailVerified) {
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.sell,
+                          color: Color.fromARGB(255, 77, 71, 71),
+                        ),
+                        title: const Style(outputText: 'Đăng ký bán hàng'),
+                        onTap: () async {
+                          final user = firebase.currentUser!;
+                          if (!user.emailVerified) {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (ctx) {
+                              return const VerifyEmail();
+                            }));
+                          } else {
+                            bool hasEnteredVendorInfo =
+                                await checkVendorInfoEntered();
+                            if (hasEnteredVendorInfo) {
+                              // Nếu thông tin cửa hàng đã được nhập, chuyển đến màn hình sản phẩm
+                              if (!context.mounted) return;
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (ctx) {
-                                return const VerifyEmail();
+                                return const TabsVendor();
                               }));
                             } else {
-                              bool hasEnteredVendorInfo =
-                                  await checkVendorInfoEntered();
-                              if (hasEnteredVendorInfo) {
-                                // Nếu thông tin cửa hàng đã được nhập, chuyển đến màn hình sản phẩm
-                                if (!context.mounted) return;
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (ctx) {
-                                  return const TabsVendor();
-                                }));
-                              } else {
-                                // Nếu thông tin cửa hàng chưa được nhập, chuyển đến màn hình nhập thông tin cửa hàng
-                                if (!context.mounted) return;
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (ctx) {
-                                  return const VendorInfor();
-                                }));
-                              }
+                              // Nếu thông tin cửa hàng chưa được nhập, chuyển đến màn hình nhập thông tin cửa hàng
+                              if (!context.mounted) return;
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(builder: (ctx) {
+                                return const VendorInfor();
+                              }));
                             }
-                          },
-                        ),
+                          }
+                        },
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: ListTile(
-                          leading: const Icon(
-                            Icons.settings,
-                            color: Color.fromARGB(255, 77, 71, 71),
-                          ),
-                          title: const Style(outputText: 'Cài đặt'),
-                          onTap: () {},
-                        ),
+                      const SizedBox(
+                        height: 6,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: ListTile(
-                          leading: const Icon(
-                            Icons.report,
-                            color: Color.fromARGB(255, 77, 71, 71),
-                          ),
-                          title: const Style(outputText: 'Báo cáo'),
-                          onTap: () {},
+                      ListTile(
+                        leading: const Icon(
+                          Icons.settings,
+                          color: Color.fromARGB(255, 77, 71, 71),
                         ),
+                        title: const Style(outputText: 'Cài đặt'),
+                        onTap: () {},
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: ListTile(
-                          leading: const Icon(
-                            Icons.help,
-                            color: Color.fromARGB(255, 77, 71, 71),
-                          ),
-                          title: const Style(outputText: 'Trợ giúp'),
-                          onTap: () {},
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.report,
+                          color: Color.fromARGB(255, 77, 71, 71),
                         ),
+                        title: const Style(outputText: 'Báo cáo'),
+                        onTap: () {},
+                      ),
+                      const SizedBox(
+                        height: 6,
+                      ),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.help,
+                          color: Color.fromARGB(255, 77, 71, 71),
+                        ),
+                        title: const Style(outputText: 'Trợ giúp'),
+                        onTap: () {},
                       ),
                     ],
                   ),

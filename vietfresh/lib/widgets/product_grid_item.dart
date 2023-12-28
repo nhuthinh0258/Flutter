@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/screen/auth.dart';
+import 'package:chat_app/screen/vendor_product_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -14,8 +15,11 @@ class ProductGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: firestore.collection('product').orderBy('sort_timestamp', descending: true)
-    .limit(4).snapshots(),
+      stream: firestore
+          .collection('product')
+          .orderBy('sort_timestamp', descending: true)
+          .limit(4)
+          .snapshots(),
       builder: (ctx, proSnapshot) {
         if (proSnapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -45,59 +49,70 @@ class ProductGridItem extends StatelessWidget {
             ),
             itemBuilder: (ctx, index) {
               final product = products[index].data();
-              return Card(
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Container(
-                            color: Colors.grey,
-                            child: product['image'] != null
-                                ? CachedNetworkImage(
-                                    imageUrl: product['image'],
-                                    fit: BoxFit.cover,
-                                  )
-                                : null,
+              return InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (ctx) {
+                        return VendorProductDetail(product: product);
+                      },
+                    ),
+                  );
+                },
+                child: Card(
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Container(
+                              color: Colors.grey,
+                              child: product['image'] != null
+                                  ? CachedNetworkImage(
+                                      imageUrl: product['image'],
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    product['name'],
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        overflow: TextOverflow.ellipsis),
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Text(
-                                    '${product['kilo'].toString()}g',
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(formatPrice(product['price'])),
-                          ],
+                        const SizedBox(
+                          height: 2,
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      product['name'],
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          overflow: TextOverflow.ellipsis),
+                                    ),
+                                    const SizedBox(
+                                      height: 2,
+                                    ),
+                                    Text(
+                                      '${product['kilo'].toString()}g',
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(formatPrice(product['price'])),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

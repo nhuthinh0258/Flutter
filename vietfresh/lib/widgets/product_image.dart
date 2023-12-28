@@ -24,7 +24,7 @@ class _ProductImageState extends State<ProductImage> {
 
   void pickCategoryImage() async {
     final pickedCategoryImage = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, maxWidth: 200);
+        .pickImage(source: ImageSource.gallery);
     if (pickedCategoryImage == null) {
       return;
     }

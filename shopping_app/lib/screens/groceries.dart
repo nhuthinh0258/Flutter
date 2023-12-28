@@ -188,29 +188,29 @@ class _GroceriesState extends ConsumerState<Groceries> {
     );
   }
 
-  // void onUpdateItem(GroceryItem product) async {
-  //   final updateItem = await Navigator.of(context).push<GroceryItem>(
-  //     MaterialPageRoute(builder: (ctx) {
-  //       return UpdateItem(
-  //         product: product,
-  //       );
-  //     }),
-  //   );
-  //   if (updateItem != null) {
-  //     setState(() {
-  //       //Phương thức .indexWhere() là một phương thức của List, được sử dụng để tìm chỉ số (index) của phần tử đầu tiên trong danh
-  //       //sách thỏa mãn một điều kiện nhất định
-  //       final indexItem = listGroceryItem.indexWhere((index) {
-  //         return index.id == updateItem.id;
-  //       });
-  //       //giá trị -1 thường được sử dụng để biểu thị rằng một tìm kiếm hoặc truy vấn không tìm thấy kết quả hợp lệ.
-  //       //nếu tìm thấy phần tử trong danh sách (nghĩa là indexItem không phải là -1), thì thực hiện các hành động tiếp theo
-  //       if (indexItem != -1) {
-  //         listGroceryItem[indexItem] = updateItem;
-  //       }
-  //     });
-  //   }
-  // }
+  void onUpdateItem(GroceryItem product) async {
+    final updateItem = await Navigator.of(context).push<GroceryItem>(
+      MaterialPageRoute(builder: (ctx) {
+        return UpdateItem(
+          product: product,
+        );
+      }),
+    );
+    if (updateItem != null) {
+      setState(() {
+        //Phương thức .indexWhere() là một phương thức của List, được sử dụng để tìm chỉ số (index) của phần tử đầu tiên trong danh
+        //sách thỏa mãn một điều kiện nhất định
+        final indexItem = listGroceryItem.indexWhere((index) {
+          return index.id == updateItem.id;
+        });
+        //giá trị -1 thường được sử dụng để biểu thị rằng một tìm kiếm hoặc truy vấn không tìm thấy kết quả hợp lệ.
+        //nếu tìm thấy phần tử trong danh sách (nghĩa là indexItem không phải là -1), thì thực hiện các hành động tiếp theo
+        if (indexItem != -1) {
+          listGroceryItem[indexItem] = updateItem;
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

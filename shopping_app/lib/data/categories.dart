@@ -1,6 +1,5 @@
 
-import 'package:flutter/material.dart';
-import 'package:shopping_app/models/category.dart';
+
 
 // const categories = {
 //   'C1': Category(

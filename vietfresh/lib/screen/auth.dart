@@ -56,7 +56,7 @@ class _AuthScreenState extends State<AuthScreen> {
         if (isCustomer) {
           final user = await firebase.signInWithEmailAndPassword(
               email: enteredEmail, password: enteredPassword);
-          if (!context.mounted) return;
+          if (!mounted) return;
           Navigator.of(context).pop();
         } else {
           final userCreate = await firebase.createUserWithEmailAndPassword(
@@ -68,7 +68,7 @@ class _AuthScreenState extends State<AuthScreen> {
             'username': enteredName,
             'email': enteredEmail,
           });
-          if (!context.mounted) return;
+          if (!mounted) return;
           Navigator.of(context).pop();
         }
       } on FirebaseAuthException catch (e) {

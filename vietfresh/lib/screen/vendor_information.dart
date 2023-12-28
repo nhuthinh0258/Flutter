@@ -1,5 +1,4 @@
 import 'package:chat_app/screen/auth.dart';
-import 'package:chat_app/screen/products.dart';
 import 'package:chat_app/screen/tabs_vendor.dart';
 import 'package:flutter/material.dart';
 
@@ -60,11 +59,12 @@ class _VendorInforState extends State<VendorInfor> {
         'user_id': user.uid,
         'vendor_name': enteredVendorName,
         'vendor_address': enteredVendorAdress,
+        'vendor_origin':selectedOriginId,
         'vendor_email': user.email,
         'vendor_phone': enteredVendorPhone
       });
 
-      if (!context.mounted) return;
+      if (!mounted) return;
       Navigator.of(context).pop();
       Navigator.of(context).push(
         MaterialPageRoute(

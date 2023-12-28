@@ -1,4 +1,4 @@
-import 'package:chat_app/screen/carousel_banner.dart';
+import 'package:chat_app/widgets/carousel_banner.dart';
 import 'package:chat_app/widgets/category_grid_item.dart';
 import 'package:chat_app/widgets/list_product_home.dart';
 import 'package:chat_app/widgets/product_grid_item.dart';

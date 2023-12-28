@@ -33,10 +33,10 @@ class _TabsVendorState extends ConsumerState<TabsVendor> {
           currentIndex: selectedPageIndex,
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(Icons.production_quantity_limits),
+                icon: Icon(Icons.category),
                 label: 'Sản phẩm'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.shop),
+                icon: Icon(Icons.store),
                 label: 'Cửa hàng'),
           ],
           selectedItemColor: Colors.yellow,

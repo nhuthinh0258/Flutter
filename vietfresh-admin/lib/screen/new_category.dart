@@ -42,10 +42,11 @@ class _NewCategoryState extends State<NewCategory> {
       final imageUrl = await storageRef.getDownloadURL();
 
       await firestore.collection('category').doc(categoryId).set({
+        'category_id':categoryId,
         'image': imageUrl,
         'name': enteredNameCategory,
       });
-      if (!context.mounted) return;
+      if (!mounted) return;
       Navigator.of(context).pop();
     }
   }

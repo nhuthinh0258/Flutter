@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:chat_app/screen/auth.dart';
-import 'package:chat_app/screen/products.dart';
-import 'package:chat_app/screen/tabs_vendor.dart';
 import 'package:chat_app/screen/vendor_information.dart';
 import 'package:chat_app/style.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +52,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
   void sendEmailVerify() async {
     final user = firebase.currentUser!;
     await user.sendEmailVerification();
-    if (!context.mounted) return;
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text(
           'Email xác thực đã được gửi. Vui lòng kiểm tra hòm thư của bạn.'),

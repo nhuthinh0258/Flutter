@@ -75,7 +75,7 @@ class _OriginState extends ConsumerState<Origin> {
   }
 
   //Hàm tải ảnh lên firestorage
-  void imageUpload(File image) async {
+  void imageUpload() async {
     setState(() {
       isLoadingImage = true;
     });
@@ -85,22 +85,37 @@ class _OriginState extends ConsumerState<Origin> {
     final storageRef =
         firebaseStorage.ref().child('banner_image').child('$bannerId.jpg');
     // Tải file ảnh lên Firebase Storage
-    await storageRef.putFile(image);
+    await storageRef.putFile(pickerImage!);
     //Lấy URL của ảnh sau khi tải lên
     final imageUrl = await storageRef.getDownloadURL();
     await firestore.collection('banner').doc(bannerId).set({
       'image': imageUrl,
       'create_at': Timestamp.now(),
     });
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Thêm ảnh thành công'),
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+            label: 'Đồng ý',
+            onPressed: () {
+              ScaffoldMessenger.of(context).clearSnackBars();
+            }),
+      ),
+    );
+
     setState(() {
+      pickerImage = null;
       isLoadingImage = false;
     });
   }
 
   //Hàm chọn ảnh
   void onPickImage() async {
-    final pickImage = await ImagePicker().pickImage(
-        source: ImageSource.gallery, imageQuality: 50, maxWidth: 150);
+    final pickImage = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 50);
 
     if (pickImage == null) {
       return;
@@ -110,7 +125,6 @@ class _OriginState extends ConsumerState<Origin> {
       pickerImage = File(pickImage.path);
     });
 
-    imageUpload(pickerImage!);
   }
 
   @override
@@ -139,80 +153,83 @@ class _OriginState extends ConsumerState<Origin> {
       appBar: AppBar(
         title: const Text('Thêm xuất xứ'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: originController,
-              focusNode: myFocusNode,
-              style: const TextStyle(color: Colors.black, fontSize: 14),
-              //Mỗi câu mới sẽ bắt đầu bằng chữ viết hoa
-              textCapitalization: TextCapitalization.sentences,
-              autocorrect: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                label: const Text('xuất xứ'),
-              ),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: submitMessage,
-                  style: ButtonStyle(
-                    //Thay đổi màu nền của button theo màu theme đã khai báo
-                    backgroundColor: MaterialStateProperty.all(
-                      Theme.of(context).primaryColorLight,
-                    ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              TextField(
+                controller: originController,
+                focusNode: myFocusNode,
+                style: const TextStyle(color: Colors.black, fontSize: 14),
+                //Mỗi câu mới sẽ bắt đầu bằng chữ viết hoa
+                textCapitalization: TextCapitalization.sentences,
+                autocorrect: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Style(
-                    outputText: 'Thêm xuất xứ',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 1,
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                  label: const Text('xuất xứ'),
                 ),
               ),
-              width: double.infinity,
-              height: 250,
-              alignment: Alignment.center,
-              child: content,
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: onPickImage,
-                  style: ButtonStyle(
-                    //Thay đổi màu nền của button theo màu theme đã khai báo
-                    backgroundColor: MaterialStateProperty.all(
-                      Theme.of(context).primaryColorLight,
+              const SizedBox(
+                height: 40,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: submitMessage,
+                    style: ButtonStyle(
+                      //Thay đổi màu nền của button theo màu theme đã khai báo
+                      backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).primaryColorLight,
+                      ),
+                    ),
+                    child: const Style(
+                      outputText: 'Thêm xuất xứ',
                     ),
                   ),
-                  child: const Style(
-                    outputText: 'Thêm banner',
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.7),
                   ),
                 ),
-              ],
-            ),
-          ],
+                width: double.infinity,
+                height: 250,
+                alignment: Alignment.center,
+                child: content,
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: imageUpload,
+                    style: ButtonStyle(
+                      //Thay đổi màu nền của button theo màu theme đã khai báo
+                      backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).primaryColorLight,
+                      ),
+                    ),
+                    child: const Style(
+                      outputText: 'Thêm banner',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

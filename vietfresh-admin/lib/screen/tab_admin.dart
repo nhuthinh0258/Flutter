@@ -38,9 +38,9 @@ class _TabsAdminState extends ConsumerState<TabsAdmin> {
                     currentIndex: selectedPageIndex,
                     items: const [
                       BottomNavigationBarItem(
-                          icon: Icon(Icons.chat), label: 'hỗ trợ'),
+                          icon: Icon(Icons.category), label: 'Thêm loại'),
                       BottomNavigationBarItem(
-                          icon: Icon(Icons.account_circle), label: 'Tôi'),
+                          icon: Icon(Icons.storage), label: 'Cập nhật'),
                     ],
                     selectedItemColor: Colors.yellow,
                   )
@@ -50,9 +50,9 @@ class _TabsAdminState extends ConsumerState<TabsAdmin> {
                 currentIndex: selectedPageIndex,
                 items: const [
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.chat), label: 'hỗ trợ'),
+                      icon: Icon(Icons.category), label: 'Thêm loại'),
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.account_circle), label: 'Tôi'),
+                      icon: Icon(Icons.storage), label: 'Cập nhật'),
                 ],
                 selectedItemColor: Colors.yellow,
               ));

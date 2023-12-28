@@ -1,5 +1,5 @@
 import 'package:admin/screen/auth_admin.dart';
-import 'package:admin/screen/categories.dart';
+
 import 'package:admin/screen/notAdmin.dart';
 import 'package:admin/screen/tab_admin.dart';
 import 'package:firebase_auth/firebase_auth.dart';

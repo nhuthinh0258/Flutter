@@ -27,7 +27,7 @@ class _VendorImageState extends State<VendorImage> {
       isLoadingImage = true;
     });
     //Lấy thông tin người dùng hiện tại từ Firebase Authentication
-    final user = firebase.currentUser!;
+    // final user = firebase.currentUser!;
     //tạo tham chiếu đến storage
     final storageRef = firebaseStorage
         .ref()
@@ -46,7 +46,7 @@ class _VendorImageState extends State<VendorImage> {
   //Hàm chọn ảnh
   void onPickedVendorImage() async {
     final pickedVendorImage = await ImagePicker().pickImage(
-        source: ImageSource.gallery, imageQuality: 50, maxWidth: 150);
+        source: ImageSource.gallery, imageQuality: 50);
     //Nếu ko có ảnh được chọn, kết thúc hàm
     if (pickedVendorImage == null) {
       return;

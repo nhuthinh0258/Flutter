@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -20,7 +20,7 @@ class _CategoryImageState extends State<CategoryImage> {
 
   void pickCategoryImage() async {
     final pickedCategoryImage = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, maxWidth: 200);
+        .pickImage(source: ImageSource.gallery);
     setState(() {
       isLoadImage = true;
     });

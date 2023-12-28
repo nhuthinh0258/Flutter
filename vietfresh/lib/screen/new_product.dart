@@ -67,7 +67,7 @@ class _NewProductState extends State<NewProduct> {
         'created_at': Timestamp.now(),
         'sort_timestamp':Timestamp.now(),
       });
-      if (!context.mounted) return;
+      if (!mounted) return;
       Navigator.of(context).pop();
     }
   }

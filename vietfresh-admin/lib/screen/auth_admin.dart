@@ -157,16 +157,16 @@ class _AuthAdminState extends State<AuthAdmin> {
                                   child:
                                       Text((isAdmin) ? 'Đăng nhập' : 'Đăng ký'),
                                 ),
-                          if (!isAuth)
-                            TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  isAdmin = !isAdmin;
-                                });
-                              },
-                              child: Text(
-                                  isAdmin ? 'Đăng ký' : 'Đã có tài khoản?'),
-                            ),
+                          // if (!isAuth)
+                          //   TextButton(
+                          //     onPressed: () {
+                          //       setState(() {
+                          //         isAdmin = !isAdmin;
+                          //       });
+                          //     },
+                          //     child: Text(
+                          //         isAdmin ? 'Đăng ký' : 'Đã có tài khoản?'),
+                          //   ),
                         ],
                       ),
                     ),

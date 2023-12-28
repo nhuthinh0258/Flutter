@@ -13,18 +13,10 @@ class CarouselBanner extends StatefulWidget {
 }
 
 class _CarouselBannerState extends State<CarouselBanner> {
-  late Future<List<String>> bannerImages;
-
-  @override
-  void initState() {
-    super.initState();
-    bannerImages = fetchBannerImages(); // Lấy ảnh khi widget được khởi tạo
-  }
-
   Future<List<String>> fetchBannerImages() async {
     final bannerData = await firestore.collection('banner').get();
     List<String> imageUrls = [];
-    for (var doc in bannerData.docs) {
+    for (final doc in bannerData.docs) {
       imageUrls.add(doc['image']);
     }
     return imageUrls;
@@ -32,25 +24,21 @@ class _CarouselBannerState extends State<CarouselBanner> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      // Connect to the stream of 'banner' collection
-      stream: firestore.collection('banner').snapshots(),
+    return FutureBuilder(
+      future: fetchBannerImages(), // Lấy ảnh từ Firestore
       builder: (context, snapshot) {
-        // Handling errors from Firebase
-        if (snapshot.hasError) {
-          return const Text('Something went wrong');
-        }
-
-        // Display loading indicator until the data is loaded
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
+          return const CircularProgressIndicator(); // Hiển thị loading khi đang chờ
         }
 
-        // Extracting data from snapshot
-        List banners = snapshot.data!.docs;
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Text(
+              "Ko tìm thấy banner."); // Hiển thị thông báo nếu không có ảnh
+        }
 
-        // Convert documents into Image Widgets or any other widgets you want to display
-        List<Widget> imageSliders = banners.map((item) {
+        List banners = snapshot.data!; // Lấy danh sách ảnh từ snapshot
+
+        List<Widget> imageSliders = banners.map((imageUrl) {
           return Builder(
             builder: (BuildContext context) {
               return Container(
@@ -60,7 +48,7 @@ class _CarouselBannerState extends State<CarouselBanner> {
                   color: Colors.amber,
                 ),
                 child: CachedNetworkImage(
-                  imageUrl:item['image'],
+                  imageUrl: imageUrl,
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: double.infinity,
@@ -70,7 +58,6 @@ class _CarouselBannerState extends State<CarouselBanner> {
           );
         }).toList();
 
-        // Using these widgets in CarouselSlider
         return CarouselSlider(
           options: CarouselOptions(
             autoPlay: true,

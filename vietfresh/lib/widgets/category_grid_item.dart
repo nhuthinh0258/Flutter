@@ -6,50 +6,53 @@ import 'package:flutter/material.dart';
 class CategoryGridItem extends StatelessWidget {
   const CategoryGridItem({super.key});
 
-  // Bước 1: Truy Vấn Sản Phẩm Theo Category
-  void fetchVendorsByCategory(Map<String, dynamic> category, BuildContext context) async {
-    String categoryId = category['category_id'];
-    //Lấy dữ liệu sản phẩm với điều kiện trùng với loại sản phẩm được chọn
-    final productsSnapshot = await firestore
-        .collection('product')
-        .where('category', isEqualTo: categoryId)
-        .get();
+  // // Bước 1: Truy Vấn Sản Phẩm Theo Category
+  // void fetchVendorsByCategory(Map<String, dynamic> category, BuildContext context) async {
+  //   String categoryId = category['category_id'];
+  //   //Lấy dữ liệu sản phẩm với điều kiện trùng với loại sản phẩm được chọn
+  //   final productsSnapshot = await firestore
+  //       .collection('product')
+  //       .where('category', isEqualTo: categoryId)
+  //       .get();
 
-    // Bước 2: Thu Thập Vendor IDs
-    //khởi tạo 1 set String
-    final Set<String> vendorIds = {};
-    final List<Map<String, dynamic>> vendorList = [];
-    //Duyệt qua từng sản phẩm trong productsSnapshot
-    for (final product in productsSnapshot.docs) {
-      //Lưu dữ liệu vào set vendorIds thông qua id vendor của sản phẩm, nếu nhiều hơn 2 id trùng nhau thì chỉ lấy 1
-      vendorIds.add(product.data()['vendor_id']);
-    }
+  //   // Bước 2: Thu Thập Vendor IDs
+  //   //khởi tạo 1 set String
+  //   final Set<String> vendorIds = {};
+  //   final List<Map<String, dynamic>> vendorList = [];
+  //   //Duyệt qua từng sản phẩm trong productsSnapshot
+  //   for (final product in productsSnapshot.docs) {
+  //     //Lưu dữ liệu vào set vendorIds thông qua id vendor của sản phẩm, nếu nhiều hơn 2 id trùng nhau thì chỉ lấy 1
+  //     vendorIds.add(product.data()['vendor_id']);
+  //   }
 
-    // Bước 3: Truy Vấn và Hiển Thị Thông Tin Vendor
+  //   // Bước 3: Truy Vấn và Hiển Thị Thông Tin Vendor
 
-    for (final vendorId in vendorIds) {
-      final vendorSnapshot =
-          await firestore.collection('vendor').doc(vendorId).get();
-      final vendorData = vendorSnapshot.data();
-      if (vendorData != null) {
-        vendorList.add(vendorData);
-      }
-    }
-    if (!context.mounted) return;
-    Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-      return VendorListHome(
-        category: category,
-        vendorList: vendorList,
-      );
-    }));
-  }
+  //   for (final vendorId in vendorIds) {
+  //     final vendorSnapshot =
+  //         await firestore.collection('vendor').doc(vendorId).get();
+  //     final vendorData = vendorSnapshot.data();
+  //     if (vendorData != null) {
+  //       vendorList.add(vendorData);
+  //     }
+  //   }
+  //   if (!context.mounted) return;
+  //   Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
+  //     return VendorListHome(
+  //       category: category,
+  //       vendorList: vendorList,
+  //     );
+  //   }));
+  // }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: firestore.collection('category').limit(8).snapshots(),
       builder: (ctx, cateSnapshot) {
-        if (!cateSnapshot.hasData) return const CircularProgressIndicator();
+        if (!cateSnapshot.hasData) {
+          return const CircularProgressIndicator();
+        }
+        
         final categories = cateSnapshot.data!.docs;
 
         return Container(
@@ -68,7 +71,11 @@ class CategoryGridItem extends StatelessWidget {
                 final category = categories[index].data();
                 return GestureDetector(
                   onTap: () {
-                    fetchVendorsByCategory(category, context);
+                    // fetchVendorsByCategory(category, context);
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (ctx) {
+                      return VendorListHome(category: category);
+                    }));
                   },
                   child: Card(
                     child: Center(

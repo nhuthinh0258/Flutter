@@ -1,9 +1,7 @@
-import 'package:chat_app/provider/customer_provider.dart';
 import 'package:chat_app/screen/auth.dart';
-import 'package:chat_app/screen/products.dart';
-import 'package:chat_app/screen/verify_email.dart';
+
 import 'package:chat_app/style.dart';
-import 'package:chat_app/widgets/user_image.dart';
+
 import 'package:chat_app/widgets/vendor_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

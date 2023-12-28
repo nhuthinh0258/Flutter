@@ -53,7 +53,7 @@ class _Product extends State<Product> {
     // Xóa ảnh từ Storage
     await firebaseStorage.refFromURL(productImage).delete();
 
-    if (!context.mounted) return;
+    if (!mounted) return;
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -62,6 +62,7 @@ class _Product extends State<Product> {
         action: SnackBarAction(
             label: 'Đồng ý',
             onPressed: () {
+              if (!mounted) return;
               ScaffoldMessenger.of(context).clearSnackBars();
             }),
       ),
