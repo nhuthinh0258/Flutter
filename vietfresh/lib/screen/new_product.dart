@@ -54,7 +54,6 @@ class _NewProductState extends State<NewProduct> {
 
       await firestore.collection('product').doc(productId).set({
         'product_id': productId,
-        'user': user.uid,
         'vendor_id':user.uid,
         'image': imageUrl,
         'name': enteredNameProduct,
@@ -128,13 +127,6 @@ class _NewProductState extends State<NewProduct> {
     return null;
   }
 
-  String? validatorOriginProduct(value) {
-    if (value == null) {
-      return 'Xuất xứ rỗng';
-    }
-    //trả về null nếu không có lỗi
-    return null;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -294,9 +286,7 @@ class _NewProductState extends State<NewProduct> {
 
                             return DropdownButtonFormField(
                               value: selectedOriginId,
-                              validator: validatorOriginProduct,
                               decoration: const InputDecoration(
-                                errorStyle: TextStyle(color: Colors.red),
                                 border: OutlineInputBorder(),
                                 label: Text('Xuất xứ',
                                     style: TextStyle(fontSize: 20)),
@@ -325,10 +315,10 @@ class _NewProductState extends State<NewProduct> {
                         child: FutureBuilder(
                           future: firestore.collection('category').get(),
                           builder: (context, cateSnapshot) {
-                            // if (cateSnapshot.connectionState ==
-                            //     ConnectionState.waiting) {
-                            //   return const CircularProgressIndicator();
-                            // }
+                            if (cateSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            }
 
                             if (!cateSnapshot.hasData ||
                                 cateSnapshot.data!.docs.isEmpty) {

@@ -73,11 +73,9 @@ class _UpdateProduct extends State<UpdateProduct> {
           firebaseStorage.refFromURL(oldImageUrl).delete();
         }
       }
-      final user = firebase.currentUser!;
       final productId = widget.product['product_id'];
       await firestore.collection('product').doc(productId).update({
         'image': imageUrl,
-        'vendor_id':user.uid,
         'name': enteredNameProduct,
         'kilo': enteredKiloProduct,
         'quantity': enteredQuantityProduct,
@@ -294,10 +292,10 @@ class _UpdateProduct extends State<UpdateProduct> {
                         child: FutureBuilder(
                           future: firestore.collection('orgin').get(),
                           builder: (context, oriSnapshot) {
-                            // if (oriSnapshot.connectionState ==
-                            //     ConnectionState.waiting) {
-                            //   return const Center(child: CircularProgressIndicator(),);
-                            // }
+                            if (oriSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(child: CircularProgressIndicator(),);
+                            }
 
                             if (!oriSnapshot.hasData ||
                                 oriSnapshot.data!.docs.isEmpty) {

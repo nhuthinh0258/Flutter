@@ -54,7 +54,7 @@ class _AuthScreenState extends State<AuthScreen> {
           isAuth = true;
         });
         if (isCustomer) {
-          final user = await firebase.signInWithEmailAndPassword(
+          await firebase.signInWithEmailAndPassword(
               email: enteredEmail, password: enteredPassword);
           if (!mounted) return;
           Navigator.of(context).pop();

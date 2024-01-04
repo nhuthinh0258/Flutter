@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/screen/auth.dart';
 import 'package:chat_app/screen/new_product.dart';
 import 'package:chat_app/screen/update_product.dart';
@@ -19,7 +20,6 @@ class _Product extends State<Product> {
   var searchQuery = ""; // Từ khóa tìm kiếm
   List<dynamic> filteredProducts = []; // Danh sách sản phẩm đã lọc
   List<Map<String, dynamic>> allProducts = [];
-
 
   void updateSearchQuery(String query) {
     setState(() {
@@ -102,7 +102,7 @@ class _Product extends State<Product> {
       body: StreamBuilder(
           stream: firestore
               .collection('product')
-              .where('user', isEqualTo: firebase.currentUser!.uid)
+              .where('vendor_id', isEqualTo: firebase.currentUser!.uid)
               .orderBy('sort_timestamp', descending: true)
               .snapshots(),
           builder: (ctx, productSnapshot) {
@@ -183,8 +183,8 @@ class _Product extends State<Product> {
                                   width: 100,
                                   height: 60,
                                   child: product['image'] != null
-                                      ? Image.network(
-                                          product['image'],
+                                      ? CachedNetworkImage(
+                                          imageUrl: product['image'],
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                           height: double.infinity,

@@ -18,7 +18,7 @@ class UserScreen extends StatelessWidget {
                 return const CircularProgressIndicator();
               }
               if (snapshot.hasData) {
-                return const TabsUser();
+                return const TabsCustomer();
               }
               return const TabGuest();
             }));

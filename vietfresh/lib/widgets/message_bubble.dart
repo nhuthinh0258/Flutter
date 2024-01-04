@@ -41,8 +41,14 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
+     final theme = Theme.of(context);
+    ImageProvider avatar;
+    if (userImage != null) {
+      avatar = NetworkImage(userImage!); // Sử dụng NetworkImage khi có URL
+    } else {
+      avatar = const AssetImage(
+          'assets/images/VietFresh.png'); // Sử dụng AssetImage hoặc một placeholder khác
+    }
     return Stack(
       children: [
         if (userImage != null)
@@ -51,9 +57,7 @@ class MessageBubble extends StatelessWidget {
             // Align user image to the right, if the message is from me.
             right: isMe ? 0 : null,
             child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                userImage!,
-              ),
+              backgroundImage: avatar,
               backgroundColor: theme.colorScheme.primary.withAlpha(180),
               radius: 23,
             ),

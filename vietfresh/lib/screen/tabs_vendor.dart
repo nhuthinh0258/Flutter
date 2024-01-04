@@ -1,3 +1,4 @@
+import 'package:chat_app/screen/vendor_order.dart';
 import 'package:chat_app/screen/products.dart';
 import 'package:chat_app/screen/vendor_detail.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class _TabsVendorState extends ConsumerState<TabsVendor> {
   int selectedPageIndex = 0;
   final List<Widget> pages = [
     const Product(),
+    const OrderVendor(),
     const VendorDetail(),
   ];
 
@@ -33,11 +35,10 @@ class _TabsVendorState extends ConsumerState<TabsVendor> {
           currentIndex: selectedPageIndex,
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(Icons.category),
-                label: 'Sản phẩm'),
+                icon: Icon(Icons.category), label: 'Sản phẩm'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.store),
-                label: 'Cửa hàng'),
+                icon: Icon(Icons.receipt), label: 'Đơn hàng'),
+            BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Cửa hàng'),
           ],
           selectedItemColor: Colors.yellow,
         ));

@@ -45,8 +45,8 @@ class _VendorImageState extends State<VendorImage> {
 
   //Hàm chọn ảnh
   void onPickedVendorImage() async {
-    final pickedVendorImage = await ImagePicker().pickImage(
-        source: ImageSource.gallery, imageQuality: 50);
+    final pickedVendorImage = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 50);
     //Nếu ko có ảnh được chọn, kết thúc hàm
     if (pickedVendorImage == null) {
       return;

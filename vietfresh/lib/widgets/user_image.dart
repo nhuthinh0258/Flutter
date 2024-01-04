@@ -63,8 +63,8 @@ class _UserImage extends State<UserImage> {
   @override
   Widget build(BuildContext context) {
     final user = firebase.currentUser!;
-    return StreamBuilder(
-      stream: firestore.collection('users').doc(user.uid).snapshots(),
+    return FutureBuilder(
+      future: firestore.collection('users').doc(user.uid).get(),
       builder: ((ctx, userSnapshot) {
         if (userSnapshot.connectionState == ConnectionState.waiting ||
             isLoadingImage) {
@@ -99,7 +99,6 @@ class _UserImage extends State<UserImage> {
           onTap: onPickImage,
           child: CircleAvatar(
             radius: 50,
-            backgroundColor: Colors.grey,
             backgroundImage: imageProvider,
           ),
         );

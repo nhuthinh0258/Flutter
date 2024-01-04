@@ -18,6 +18,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'VietFresh',
       theme: ThemeData.dark().copyWith(
         useMaterial3: true,
@@ -37,20 +38,12 @@ class App extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        bottomNavigationBarTheme:const BottomNavigationBarThemeData(
+          selectedItemColor: Colors.yellow, // Màu khi item được chọn
+          unselectedItemColor: Colors.white, // Màu khi item không được chọn
+        ),
       ),
       home: const UserScreen(),
     );
   }
 }
-// StreamBuilder(
-//         stream: firebase.authStateChanges(),
-//         builder: (ctx, snapshot) {
-//           if(snapshot.connectionState == ConnectionState.waiting){
-//             return const SlashScreen();
-//           }
-//           if (snapshot.hasData) {
-//             return const ChatScreen();
-//           }
-//           return const AuthScreen();
-//         },
-//       ),

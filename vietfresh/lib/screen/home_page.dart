@@ -1,15 +1,27 @@
+import 'package:chat_app/screen/auth.dart';
 import 'package:chat_app/widgets/carousel_banner.dart';
 import 'package:chat_app/widgets/category_grid_item.dart';
 import 'package:chat_app/widgets/list_product_home.dart';
 import 'package:chat_app/widgets/product_grid_item.dart';
 import 'package:flutter/material.dart';
 
+import '../widgets/cart_icon.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
   @override
   Widget build(BuildContext context) {
-
+    final user = firebase.currentUser;
     return Scaffold(
+      appBar: user == null
+          ? null
+          : AppBar(
+              title: const Text('Trang chủ'),
+              centerTitle: true,
+              actions: const [
+                CartIconWithBadge(),
+              ],
+            ),
       body: SingleChildScrollView(
         child: Column(
           children: [

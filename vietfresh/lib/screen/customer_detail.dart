@@ -1,5 +1,6 @@
 import 'package:chat_app/provider/customer_provider.dart';
 import 'package:chat_app/screen/auth.dart';
+import 'package:chat_app/screen/customer_info.dart';
 import 'package:chat_app/screen/tabs_vendor.dart';
 import 'package:chat_app/screen/vendor_information.dart';
 import 'package:chat_app/screen/verify_email.dart';
@@ -8,12 +9,14 @@ import 'package:chat_app/widgets/user_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../widgets/cart_icon.dart';
+
 class CustomerDetail extends ConsumerWidget {
   const CustomerDetail({super.key});
 
+  
   Future<bool> checkVendorInfoEntered() async {
     final user = firebase.currentUser!;
-
     // Lấy thông tin cửa hàng từ Firestore
     final vendorInfo = await firestore
         .collection('vendor')
@@ -39,7 +42,15 @@ class CustomerDetail extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userName = ref.watch(userProvider).userName;
+    final user = firebase.currentUser;
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tài khoản'),
+        centerTitle: true,
+        actions: [
+          if (user != null) const CartIconWithBadge(),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Column(
@@ -72,7 +83,11 @@ class CustomerDetail extends ConsumerWidget {
                           color: Color.fromARGB(255, 77, 71, 71),
                         ),
                         title: const Style(outputText: 'Chi tiết tài khoản'),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (ctx){
+                            return const CustomerInfor();
+                          }));
+                        },
                       ),
                       const SizedBox(
                         height: 6,

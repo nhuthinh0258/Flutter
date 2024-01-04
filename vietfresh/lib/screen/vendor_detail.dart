@@ -13,7 +13,10 @@ class VendorDetail extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = firebase.currentUser!;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title:const Text('Cửa Hàng'),
+        centerTitle: true,
+      ),
       body: StreamBuilder(
           stream: firestore
               .collection('vendor')
@@ -107,69 +110,3 @@ class VendorDetail extends ConsumerWidget {
   }
 }
 
-// SingleChildScrollView(
-//         child: Center(
-//           child: Column(
-//             children: [
-//               Padding(
-//                 padding: const EdgeInsets.symmetric(
-//                   vertical: 20,
-//                 ),
-//                 child: Column(
-//                   children: [
-//                     VendorImage(vendorId: vendorId,),
-//                     const SizedBox(height: 6,),
-//                     Style(
-//                       outputText: '$vendorName',
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               Container(
-//                 color: const Color.fromARGB(255, 232, 223, 223),
-//                 child: Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 16),
-//                   child: Column(
-//                     mainAxisSize: MainAxisSize.min,
-//                     children: [
-//                       Padding(
-//                         padding: const EdgeInsets.symmetric(vertical: 6),
-//                         child: ListTile(
-//                           leading: const Icon(
-//                             Icons.account_circle,
-//                             color: Color.fromARGB(255, 77, 71, 71),
-//                           ),
-//                           title: const Style(outputText: 'Chi tiết tài khoản'),
-//                           onTap: () {},
-//                         ),
-//                       ),
-//                       Padding(
-//                         padding: const EdgeInsets.symmetric(vertical: 6),
-//                         child: ListTile(
-//                           leading: const Icon(
-//                             Icons.report,
-//                             color: Color.fromARGB(255, 77, 71, 71),
-//                           ),
-//                           title: const Style(outputText: 'Báo cáo'),
-//                           onTap: () {},
-//                         ),
-//                       ),
-//                       Padding(
-//                         padding: const EdgeInsets.symmetric(vertical: 6),
-//                         child: ListTile(
-//                           leading: const Icon(
-//                             Icons.help,
-//                             color: Color.fromARGB(255, 77, 71, 71),
-//                           ),
-//                           title: const Style(outputText: 'Trợ giúp'),
-//                           onTap: () {},
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),

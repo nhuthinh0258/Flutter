@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/screen/auth.dart';
 import 'package:chat_app/screen/vendor_product_list.dart';
+
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -36,7 +37,8 @@ class VendorListHome extends StatelessWidget {
     Stream vendorStream = getVendorStreamOnProducts(category['category_id']);
     return Scaffold(
       appBar: AppBar(
-        title: Text(category['name']),
+        title: Text(category['name'],),
+        centerTitle: true,
       ),
       body: StreamBuilder(
           stream: vendorStream,
@@ -101,7 +103,7 @@ class VendorListHome extends StatelessWidget {
                         Navigator.of(context)
                             .push(MaterialPageRoute(builder: (ctx) {
                           return VendorProductList(
-                              vendor: vendor, imageProvider: imageProvider);
+                              vendor: vendor, imageProvider: imageProvider,category: category,);
                         }));
                       },
                       child: Stack(

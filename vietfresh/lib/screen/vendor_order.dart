@@ -1,22 +1,23 @@
-import 'package:chat_app/screen/auth.dart';
-import 'package:chat_app/screen/receipt_detail.dart';
-import 'package:chat_app/style.dart';
-import 'package:intl/intl.dart';
+import 'package:chat_app/screen/vendor_order_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
+import '../style.dart';
 import '../style2.dart';
-import '../widgets/cart_icon.dart';
+import 'auth.dart';
 
-class Order extends StatefulWidget {
-  const Order({super.key});
+class OrderVendor extends StatefulWidget {
+  const OrderVendor({super.key});
+
   @override
-  State<Order> createState() {
-    return _OrderState();
+  State<OrderVendor> createState() {
+    return _OrderVendoState();
   }
 }
 
-class _OrderState extends State<Order> with TickerProviderStateMixin {
+class _OrderVendoState extends State<OrderVendor>
+    with TickerProviderStateMixin {
   Future getStatusList() async {
     // Lấy danh sách trạng thái từ Firestore
     final statusCollection = await firestore.collection('status').get();
@@ -80,9 +81,6 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                     text: status['status_code'],
                   );
                 }).toList()),
-            actions: [
-              if (user != null) const CartIconWithBadge(),
-            ],
           ),
           body: TabBarView(
             controller: tabController,
@@ -91,7 +89,7 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                 stream: firestore
                     .collection('order')
                     .where('status', isEqualTo: status['status_id'])
-                    .where('user_id', isEqualTo: user!.uid)
+                    .where('vendor_id', isEqualTo: user!.uid)
                     .orderBy('order_at', descending: true)
                     .snapshots(),
                 builder: (ctx, orderSnapshot) {
@@ -142,12 +140,8 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                           DateFormat('dd-MM-yyyy - kk:mm').format(dateTime);
                       return InkWell(
                         onTap: () {
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (ctx) {
-                            return ReceiptDetail(
-                              order: order,
-                              orders: orders[index].id,
-                            );
+                          Navigator.of(context).push(MaterialPageRoute(builder: (ctx){
+                            return VendorOrderDetail(order: order, orders: orders[index].id);
                           }));
                         },
                         child: Card(
