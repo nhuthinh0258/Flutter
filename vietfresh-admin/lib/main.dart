@@ -37,6 +37,10 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          selectedItemColor: Colors.yellow, // Màu khi item được chọn
+          unselectedItemColor: Colors.white, // Màu khi item không được chọn
+        ),
       ),
       home: const Login(),
     );

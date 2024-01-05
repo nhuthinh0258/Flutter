@@ -1,5 +1,7 @@
 import 'package:admin/screen/categories.dart';
+import 'package:admin/screen/order.dart';
 import 'package:admin/screen/origin.dart';
+import 'package:admin/screen/products.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,7 +18,9 @@ class TabsAdmin extends ConsumerStatefulWidget {
 class _TabsAdminState extends ConsumerState<TabsAdmin> {
   int selectedPageIndex = 0;
   final List<Widget> pages = [
+    const Product(),
     const Categories(),
+    const Order(),
     const Origin(),
   ];
 
@@ -31,14 +35,18 @@ class _TabsAdminState extends ConsumerState<TabsAdmin> {
     final isKeyboardVisible = ref.watch(bottomNavigationProvider);
     return Scaffold(
         body: pages[selectedPageIndex],
-        bottomNavigationBar: selectedPageIndex == 1
+        bottomNavigationBar: selectedPageIndex == 0 || selectedPageIndex == 2
             ? isKeyboardVisible
                 ? BottomNavigationBar(
                     onTap: selectedPage,
                     currentIndex: selectedPageIndex,
                     items: const [
                       BottomNavigationBarItem(
-                          icon: Icon(Icons.category), label: 'Thêm loại'),
+                          icon: Icon(Icons.inventory), label: 'Sản phẩm'),
+                      BottomNavigationBarItem(
+                          icon: Icon(Icons.category), label: 'Loại sp'),
+                      BottomNavigationBarItem(
+                          icon: Icon(Icons.receipt), label: 'Hóa đơn'),
                       BottomNavigationBarItem(
                           icon: Icon(Icons.storage), label: 'Cập nhật'),
                     ],
@@ -50,7 +58,11 @@ class _TabsAdminState extends ConsumerState<TabsAdmin> {
                 currentIndex: selectedPageIndex,
                 items: const [
                   BottomNavigationBarItem(
-                      icon: Icon(Icons.category), label: 'Thêm loại'),
+                      icon: Icon(Icons.inventory), label: 'Sản phẩm'),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.category), label: 'Loại sp'),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.receipt), label: 'Hóa đơn'),
                   BottomNavigationBarItem(
                       icon: Icon(Icons.storage), label: 'Cập nhật'),
                 ],
