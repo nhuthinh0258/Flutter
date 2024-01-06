@@ -1,4 +1,5 @@
 import 'package:chat_app/screen/auth.dart';
+import 'package:chat_app/screen/hot_product.dart';
 import 'package:chat_app/widgets/carousel_banner.dart';
 import 'package:chat_app/widgets/category_grid_item.dart';
 import 'package:chat_app/widgets/list_product_home.dart';
@@ -6,6 +7,7 @@ import 'package:chat_app/widgets/product_grid_item.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/cart_icon.dart';
+import 'newest_product.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -51,7 +53,14 @@ class HomePage extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (ctx) {
+                            return const NewestProduct();
+                          });
+                    },
                     child: const Text(
                       'Xem thêm >',
                       style: TextStyle(color: Colors.black),
@@ -77,7 +86,14 @@ class HomePage extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (ctx) {
+                            return const HotProduct();
+                          });
+                    },
                     child: const Text(
                       'Xem thêm >',
                       style: TextStyle(color: Colors.black),

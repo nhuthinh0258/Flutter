@@ -106,10 +106,11 @@ class _VendorOrderDetailState extends State<VendorOrderDetail> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Style(outputText: 'Họ tên: ${widget.order['order_name']}'),
+                Expanded(child: Style(outputText: 'Họ tên: ${widget.order['order_name']}')),
                 const SizedBox(
-                  width: 100,
+                  width: 20,
                 ),
                 Expanded(
                   child: FutureBuilder(

@@ -5,8 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ReceiptDetail extends StatelessWidget {
-  const ReceiptDetail({super.key, required this.order, required this.orders});
+class OrderDetail extends StatelessWidget {
+  const OrderDetail({super.key, required this.order, required this.orders});
   final String orders;
   final Map<String, dynamic> order;
 

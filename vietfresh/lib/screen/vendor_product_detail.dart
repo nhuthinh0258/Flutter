@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/screen/auth.dart';
+import 'package:chat_app/screen/oder_infomation.dart';
 import 'package:chat_app/widgets/favorite_product.dart';
 
 import 'package:flutter/material.dart';
@@ -158,6 +159,8 @@ class VendorProductDetail extends StatelessWidget {
             );
           }
           final detailData = detailSnapshot.data!.data();
+          detailData!['quantity_buy'] = 1;
+          final cartItems = [detailData];
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -288,6 +291,10 @@ class VendorProductDetail extends StatelessWidget {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
                                   return const AuthScreen();
+                                }));
+                              }else{
+                                Navigator.of(context).push(MaterialPageRoute(builder: (ctx){
+                                  return OrderInfor(totalAmount: formatPrice(detailData['price']), cartItems: cartItems);
                                 }));
                               }
                             },

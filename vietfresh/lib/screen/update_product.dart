@@ -20,7 +20,6 @@ class UpdateProduct extends StatefulWidget {
 
 class _UpdateProduct extends State<UpdateProduct> {
   final formKeyUpdateProduct = GlobalKey<FormState>();
-  final formkeyProduct = GlobalKey<FormState>();
   var enteredNameProduct = '';
   var enteredKiloProduct = 100;
   var enteredQuantityProduct = 1;
@@ -44,8 +43,8 @@ class _UpdateProduct extends State<UpdateProduct> {
   }
 
   void updateProduct() async {
-    if (formkeyProduct.currentState!.validate()) {
-      formkeyProduct.currentState!.save();
+    if (formKeyUpdateProduct.currentState!.validate()) {
+      formKeyUpdateProduct.currentState!.save();
 
       setState(() {
         isSending = true;
@@ -164,7 +163,7 @@ class _UpdateProduct extends State<UpdateProduct> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Form(
-            key: formkeyProduct,
+            key: formKeyUpdateProduct,
             child: Column(
               children: [
                 ProductImage(

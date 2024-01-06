@@ -161,10 +161,7 @@ class _Product extends State<Product> {
                     ),
                     onDismissed: (direction) {
                       onDeleteProduct(product['product_id'], product['image']);
-
-                      setState(() {
-                        filteredProducts.removeAt(index);
-                      });
+                      filteredProducts.removeAt(index);
                     },
                     child: Card(
                       margin: const EdgeInsets.symmetric(

@@ -43,13 +43,13 @@ class ChatMessage extends StatelessWidget {
                 builder: (context, userSnapshot) {
                   if (userSnapshot.connectionState == ConnectionState.done &&
                       userSnapshot.hasData) {
-                    var userData =
-                        userSnapshot.data!.data() as Map<String, dynamic>;
+                    final userData =
+                        userSnapshot.data!.data();
                     // Sử dụng thông tin người dùng để hiển thị tin nhắn
                     if (isFirstMessage) {
                       return MessageBubble.first(
-                        userImage: userData['image'], // Ảnh đại diện mới nhất
-                        username: userData['username'],
+                        userImage: userData?['image'], // Ảnh đại diện mới nhất
+                        username: userData?['username'],
                         message: chatMessage['text'],
                         isMe: user.uid == currentUserChatId,
                       );

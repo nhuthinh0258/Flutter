@@ -67,6 +67,7 @@ class _AuthScreenState extends State<AuthScreen> {
           await firestore.collection('users').doc(userCreate.user!.uid).set({
             'username': enteredName,
             'email': enteredEmail,
+            'role':'user',
           });
           if (!mounted) return;
           Navigator.of(context).pop();

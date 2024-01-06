@@ -138,13 +138,13 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
                           timestamp.toDate(); // Chuyển Timestamp thành DateTime
 
                       // Định dạng DateTime thành chuỗi ngày giờ theo ý muốn
-                      String formattedDate =
+                      final formattedDate =
                           DateFormat('dd-MM-yyyy - kk:mm').format(dateTime);
                       return InkWell(
                         onTap: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (ctx) {
-                            return ReceiptDetail(
+                            return OrderDetail(
                               order: order,
                               orders: orders[index].id,
                             );

@@ -59,6 +59,7 @@ class _NewProductState extends State<NewProduct> {
         'name': enteredNameProduct,
         'kilo': enteredKiloProduct,
         'quantity': enteredQuantityProduct,
+        'quantity_buy':0,
         'price': enteredPriceProduct,
         'category': selectedCategoryId,
         'origin': selectedOriginId,

@@ -15,6 +15,9 @@ class Style extends StatelessWidget {
         color: const Color.fromARGB(255, 1, 1, 1),
         fontWeight: FontWeight.bold
       ),
+      overflow: TextOverflow.ellipsis,
+      maxLines: 2,
+      softWrap: true,
     );
   }
 }

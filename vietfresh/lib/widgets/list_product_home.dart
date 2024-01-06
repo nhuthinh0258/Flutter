@@ -16,18 +16,7 @@ class ListProductHome extends StatelessWidget {
     return '${formatCurrency.format(price)}₫';
   }
 
-  // Hàm chọn ngẫu nhiên một số phần tử từ list
-  List getRandomElements(List list, int count) {
-    final random = Random();
-    // Đảm bảo không chọn quá số lượng có trong list
-    count = min(count, list.length);
-    final randomElements = <dynamic>{};
-    while (randomElements.length < count) {
-      final randomIndex = random.nextInt(list.length);
-      randomElements.add(list[randomIndex]);
-    }
-    return randomElements.toList();
-  }
+
 
   void addToCart(Map<String, dynamic> product, BuildContext context) async {
     final user = firebase.currentUser!;
@@ -154,7 +143,7 @@ class ListProductHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: firestore.collection('product').snapshots(),
+        stream: firestore.collection('product').orderBy('quantity_buy',descending: true).limit(3).snapshots(),
         builder: (ctx, proSnapshot) {
           if (proSnapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -172,15 +161,15 @@ class ListProductHome extends StatelessWidget {
             );
           }
           final products = proSnapshot.data!.docs;
-          final randomProduct = getRandomElements(products, 3);
+          // final randomProduct = getRandomElements(products, 3);
           return Container(
             margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: randomProduct.length,
+                itemCount: products.length,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (ctx, index) {
-                  final product = randomProduct[index].data();
+                  final product = products[index].data();
                   return Column(
                     children: [
                       InkWell(

@@ -29,7 +29,27 @@ class _OrderInforState extends State<OrderInfor> {
   var onBillingStatus = 'status-1';
   var _method = PaymentMethod.cashOnDelivery;
   var isSending = false;
+  var isLoading = true;
 
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  void loadData()async {
+    final user = firebase.currentUser!;
+    final userData =await firestore.collection('users').doc(user.uid).get();
+    final userProfile = userData.data();
+    setState(() {
+      isLoading = false;
+      enteredBillingName = userProfile?['user_name'] ?? enteredBillingName;
+      enteredBillingAdress = userProfile?['user_address'] ?? enteredBillingAdress;
+      enteredBillingPhone = userProfile?['user_phone'] ?? enteredBillingPhone;
+      selectedOriginId = userProfile?['user_origin'] ?? selectedOriginId;
+    });
+  }
+  
   String? validateBillingName(String? value) {
     if (value == null || value.isEmpty || value.trim().length < 4) {
       return 'Tên cửa hàng không hợp lệ';
@@ -47,7 +67,7 @@ class _OrderInforState extends State<OrderInfor> {
   String? validateBillingPhone(String? value) {
     if (value == null || value.isEmpty) {
       return 'Số điện thoại trống';
-    } else if (value.trim().length > 11 || value.trim().length < 11) {
+    } else if (value.trim().length > 10 || value.trim().length < 10) {
       return 'số điện thoại không hợp lệ';
     }
     return null;
@@ -103,7 +123,7 @@ class _OrderInforState extends State<OrderInfor> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Form(
+            child:isLoading ?const CircularProgressIndicator() : Form(
               key: orderInforKeyForm,
               child: Column(
                 children: [
@@ -111,6 +131,7 @@ class _OrderInforState extends State<OrderInfor> {
                     height: 4,
                   ),
                   TextFormField(
+                    initialValue: enteredBillingName,
                     decoration: const InputDecoration(
                       errorStyle: TextStyle(color: Colors.red),
                       border: OutlineInputBorder(),
@@ -138,6 +159,7 @@ class _OrderInforState extends State<OrderInfor> {
                       Expanded(
                         flex: 2,
                         child: TextFormField(
+                          initialValue: enteredBillingAdress,
                           decoration: const InputDecoration(
                             errorStyle: TextStyle(color: Colors.red),
                             border: OutlineInputBorder(),
@@ -214,6 +236,7 @@ class _OrderInforState extends State<OrderInfor> {
                     height: 4,
                   ),
                   TextFormField(
+                    initialValue: enteredBillingPhone.toString(),
                     decoration: const InputDecoration(
                       errorStyle: TextStyle(color: Colors.red),
                       border: OutlineInputBorder(),
