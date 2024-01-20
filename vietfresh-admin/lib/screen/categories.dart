@@ -1,5 +1,8 @@
 import 'package:admin/screen/auth_admin.dart';
 import 'package:admin/screen/new_category.dart';
+import 'package:admin/screen/update_categories.dart';
+import 'package:admin/style.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class Categories extends StatefulWidget {
@@ -78,7 +81,8 @@ class _CategoriesState extends State<Categories> {
                 itemBuilder: (ctx, index) {
                   final category = categories[index].data();
                   return Card(
-                    margin:const EdgeInsets.symmetric(horizontal: 6,vertical:10 ),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
                     color: Theme.of(context).primaryColorLight,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
@@ -94,8 +98,8 @@ class _CategoriesState extends State<Categories> {
                                 width: 100,
                                 height: 60,
                                 child: category['image'] != null
-                                    ? Image.network(
-                                        category['image'],
+                                    ? CachedNetworkImage(
+                                        imageUrl: category['image'],
                                         fit: BoxFit.cover,
                                         width: double.infinity,
                                         height: double.infinity,
@@ -104,14 +108,27 @@ class _CategoriesState extends State<Categories> {
                               ),
                             ),
                             const SizedBox(
-                              width: 100,
+                              width: 50,
                             ),
                           ],
                         ),
-                        title: Text(
-                          category['name'],
-                          style: const TextStyle(color: Colors.black,fontSize: 18),
+                        title: Style(
+                          outputText: category['name'],
                         ),
+                        trailing: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (ctx) {
+                                  return UpdateCategories(
+                                      categories: category,
+                                      currentImageUrl: category['image']);
+                                }),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Colors.black,
+                            )),
                       ),
                     ),
                   );

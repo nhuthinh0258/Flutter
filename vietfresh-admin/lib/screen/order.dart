@@ -54,7 +54,6 @@ class _OrderState extends State<Order> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final user = firebase.currentUser;
     return FutureBuilder(
       future: getStatusList(),
       builder: (ctx, snapshot) {

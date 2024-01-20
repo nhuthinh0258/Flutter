@@ -1,34 +1,52 @@
 import 'package:admin/screen/update_product.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../provider/bottom_navigation_provider.dart';
 import '../style.dart';
 import '../style2.dart';
 import 'auth_admin.dart';
 import 'new_category.dart';
 import 'new_products.dart';
 
-class Product extends StatefulWidget {
-  const Product({super.key});
-
+class Product extends ConsumerStatefulWidget {
+  const Product({
+    super.key,
+  });
   @override
-  State<Product> createState() {
+  ConsumerState<Product> createState() {
     return _Product();
   }
 }
 
-class _Product extends State<Product> {
+class _Product extends ConsumerState<Product> {
   var searchQuery = ""; // Từ khóa tìm kiếm
   List<dynamic> filteredProducts = []; // Danh sách sản phẩm đã lọc
   List<Map<String, dynamic>> allProducts = [];
+  late FocusNode myFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    myFocusNode = FocusNode();
+
+    // Thêm listener
+    myFocusNode.addListener(onFocusChange);
+  }
+
+  void onFocusChange() {
+    if (myFocusNode.hasFocus) {
+      ref.read(bottomNavigationProvider.notifier).hide();
+    } else {
+      ref.read(bottomNavigationProvider.notifier).show();
+    }
+  }
 
   void updateSearchQuery(String query) {
     setState(() {
       searchQuery = query.toLowerCase();
-      filteredProducts = allProducts.where((product) {
-        return product['name'].toLowerCase().contains(searchQuery);
-      }).toList();
     });
   }
 
@@ -83,6 +101,7 @@ class _Product extends State<Product> {
             borderRadius: BorderRadius.circular(20), // Làm tròn góc nếu muốn
           ),
           child: TextField(
+            focusNode: myFocusNode,
             onChanged: updateSearchQuery,
             decoration: const InputDecoration(
               hintText: "Tìm kiếm sản phẩm...",
@@ -145,8 +164,9 @@ class _Product extends State<Product> {
             final filteredProducts = searchQuery.isEmpty
                 ? productsItem
                 : productsItem.where((product) {
-                    String name = product['name'].toString().toLowerCase();
-                    return name.contains(searchQuery);
+                    return (product['name'].toString())
+                        .toLowerCase()
+                        .contains(searchQuery);
                   }).toList();
             return ListView.builder(
                 itemCount: filteredProducts.length,
@@ -181,8 +201,8 @@ class _Product extends State<Product> {
                                   width: 100,
                                   height: 60,
                                   child: product['image'] != null
-                                      ? Image.network(
-                                          product['image'],
+                                      ? CachedNetworkImage(
+                                          imageUrl: product['image'],
                                           fit: BoxFit.cover,
                                           width: double.infinity,
                                           height: double.infinity,
@@ -206,9 +226,7 @@ class _Product extends State<Product> {
                               const SizedBox(
                                 height: 2,
                               ),
-                              Style2(
-                                  outputText:
-                                      'Số lượng: ${product['quantity'].toString()}')
+                              Style2(outputText: ' ${product['user']}')
                             ],
                           ),
                           trailing: IconButton(

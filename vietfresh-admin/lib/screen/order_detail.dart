@@ -105,10 +105,13 @@ class _OrderDetailState extends State<OrderDetail> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Style(outputText: 'Họ tên: ${widget.order['order_name']}'),
+                Expanded(
+                    child: Style(
+                        outputText: 'Họ tên: ${widget.order['order_name']}')),
                 const SizedBox(
-                  width: 100,
+                  width: 20,
                 ),
                 Expanded(
                   child: FutureBuilder(
@@ -203,6 +206,12 @@ class _OrderDetailState extends State<OrderDetail> {
             const SizedBox(
               height: 10,
             ),
+            Style2(
+                outputText:
+                    'Địa chỉ: ${widget.order['order_location'] ?? 'null'}'),
+            const SizedBox(
+              height: 10,
+            ),
             Style2(outputText: 'Số điện thoại: ${widget.order['order_phone']}'),
             const SizedBox(
               height: 10,
@@ -270,8 +279,8 @@ class _OrderDetailState extends State<OrderDetail> {
                                 ),
                                 width: 100,
                                 height: 100,
-                                child: Image.network(
-                                  orderItem['image'],
+                                child: CachedNetworkImage(
+                                  imageUrl: orderItem['image'],
                                   fit: BoxFit.cover,
                                 ),
                               ),

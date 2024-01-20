@@ -1,50 +1,70 @@
 import 'dart:io';
 
-import 'package:admin/screen/auth_admin.dart';
-import 'package:admin/style.dart';
-import 'package:admin/widget/category_image.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
-final firebaseStorage = FirebaseStorage.instance;
+import '../style.dart';
+import '../widget/category_image.dart';
+import 'auth_admin.dart';
+import 'new_category.dart';
 
-class NewCategory extends StatefulWidget {
-  const NewCategory({super.key});
+class UpdateCategories extends StatefulWidget {
+  const UpdateCategories(
+      {super.key, required this.categories, required this.currentImageUrl});
+  final Map<String, dynamic> categories;
+  final String currentImageUrl;
 
   @override
-  State<NewCategory> createState() {
-    return _NewCategoryState();
+  State<UpdateCategories> createState() {
+    return _UpdateCategoriesState();
   }
 }
 
-class _NewCategoryState extends State<NewCategory> {
-  final formkeyCategory = GlobalKey<FormState>();
-  var enteredNameCategory = '';
+class _UpdateCategoriesState extends State<UpdateCategories> {
+  final formKeyUpdateCategories = GlobalKey<FormState>();
+  var enteredNameCategories = '';
   File? selectedImage;
   var isSending = false;
 
-  void submitCategory() async {
-    if (formkeyCategory.currentState!.validate()) {
-      if (selectedImage == null) {
-        return;
-      }
-      formkeyCategory.currentState!.save();
+  @override
+  void initState() {
+    super.initState();
+    enteredNameCategories = widget.categories['name'];
+  }
+
+  void updateCategory() async {
+    if (formKeyUpdateCategories.currentState!.validate()) {
+      formKeyUpdateCategories.currentState!.save();
 
       setState(() {
         isSending = true;
       });
+      //Lưu ảnh hiện tại vào imageUrl
+      String imageUrl = widget.currentImageUrl;
 
-      final categoryId =
-          'category-${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final storageRef =
-          firebaseStorage.ref().child('category_image').child(categoryId);
-      await storageRef.putFile(selectedImage!);
-      final imageUrl = await storageRef.getDownloadURL();
-
-      await firestore.collection('category').doc(categoryId).set({
-        'category_id':categoryId,
+      //Nếu việc thay ảnh là đúng
+      if (selectedImage != null) {
+        //Lưu ảnh cũ vào biến oldImageUrl
+        String oldImageUrl = imageUrl;
+        //Tạo id ảnh sản phẩm mới
+        final categoryImage =
+            'category-${DateTime.now().millisecondsSinceEpoch}.jpg';
+        //Lưu ảnh vào product_image trong firestorage
+        final storageRef =
+            firebaseStorage.ref().child('category_image').child(categoryImage);
+        //Đợi lưu ảnh
+        await storageRef.putFile(selectedImage!);
+        //Đợi lấy url của ảnh sau khi lưu
+        imageUrl = await storageRef.getDownloadURL();
+        //Nếu ảnh cũ khác với ảnh mới
+        if (oldImageUrl != imageUrl) {
+          //Xóa ảnh cũ
+          firebaseStorage.refFromURL(oldImageUrl).delete();
+        }
+      }
+      final categoryId = widget.categories['category_id'];
+      await firestore.collection('category').doc(categoryId).update({
         'image': imageUrl,
-        'name': enteredNameCategory,
+        'name': enteredNameCategories,
       });
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -57,37 +77,39 @@ class _NewCategoryState extends State<NewCategory> {
 
   String? validatorEnteredNameCategory(String? value) {
     if (value == null || value.isEmpty || value.trim().length < 3) {
-      return 'Tên loại sản phẩm ko hợp lệ';
+      return 'Tên sản phẩm ko hợp lệ';
     }
     return null;
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Thêm loại sản phẩm'),
+        title: const Text('Thêm sản phẩm'),
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Form(
-            key: formkeyCategory,
+            key: formKeyUpdateCategories,
             child: Column(
               children: [
                 CategoryImage(
                   onSelectedCategoryImage: onSelectedCategoryImage,
-                  initialImageUrl: null,
+                  initialImageUrl: widget.categories['image'],
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 TextFormField(
+                  initialValue: enteredNameCategories,
                   decoration: const InputDecoration(
                     errorStyle: TextStyle(color: Colors.red),
                     border: OutlineInputBorder(),
                     label: Text(
-                      'Tên loại sản phẩm',
+                      'Tên sản phẩm',
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
@@ -97,17 +119,17 @@ class _NewCategoryState extends State<NewCategory> {
                   ),
                   validator: validatorEnteredNameCategory,
                   onSaved: (value) {
-                    enteredNameCategory = value!;
+                    enteredNameCategories = value!;
                   },
                 ),
                 const SizedBox(
-                  height: 40,
+                  height: 20,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: submitCategory,
+                      onPressed: updateCategory,
                       style: ButtonStyle(
                         //Thay đổi màu nền của button theo màu theme đã khai báo
                         backgroundColor: MaterialStateProperty.all(
@@ -121,7 +143,7 @@ class _NewCategoryState extends State<NewCategory> {
                               child: Center(child: CircularProgressIndicator()),
                             )
                           : const Style(
-                              outputText: 'Thêm loại sản phẩm',
+                              outputText: 'Sửa sản phẩm',
                             ),
                     ),
                   ],

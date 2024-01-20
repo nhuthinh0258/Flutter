@@ -46,7 +46,7 @@ class _AuthAdminState extends State<AuthAdmin> {
           isAuth = true;
         });
         if (isAdmin) {
-          final admin = await firebase.signInWithEmailAndPassword(
+          await firebase.signInWithEmailAndPassword(
               email: enteredEmail, password: enteredPassword);
 
         } else {

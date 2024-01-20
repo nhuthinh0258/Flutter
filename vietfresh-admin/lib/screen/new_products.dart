@@ -42,7 +42,6 @@ class _NewProductState extends State<NewProduct> {
         isSending = true;
       });
 
-      final user = firebase.currentUser!;
       final productImage =
           'product-${DateTime.now().millisecondsSinceEpoch}.jpg';
       final productId = 'product-${DateTime.now().millisecondsSinceEpoch}';
@@ -53,7 +52,7 @@ class _NewProductState extends State<NewProduct> {
 
       await firestore.collection('product').doc(productId).set({
         'product_id': productId,
-        'user_id':selectedVendorId,
+        'user': selectedVendorId,
         'vendor_id': selectedVendorId,
         'image': imageUrl,
         'name': enteredNameProduct,
@@ -68,6 +67,19 @@ class _NewProductState extends State<NewProduct> {
         'sort_timestamp': Timestamp.now(),
       });
       if (!mounted) return;
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Sản phẩm đã được thêm thành công'),
+          duration: const Duration(seconds: 5),
+          action: SnackBarAction(
+              label: 'Đồng ý',
+              onPressed: () {
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).clearSnackBars();
+              }),
+        ),
+      );
       Navigator.of(context).pop();
     }
   }
